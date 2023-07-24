@@ -1,28 +1,25 @@
 'use strict';
-import {Model} from 'sequelize'
-module.exports = (sequelize, DataTypes) => {
+import {DataTypes, Model} from 'sequelize'
+import sequelizeConnection from '../config';
 
 
   interface BlogsAttributes 
 {
   id:number
-  title:number;
+  title:string;
+  likes:number;
   description: string;
   userId : number;
+
 } 
+
   class Blogs extends Model<BlogsAttributes> implements BlogsAttributes {
-    /**
-     * Helper method for defining associations.
-     * This method is not a part of Sequelize lifecycle.
-     * The `models/index` file will call this method automatically.
-     */
-    id: number;
-    title:number;
-  description: string;
-  userId : number;
-    static associate(models) {
-       Blogs.hasOne(models.User,{foreignKey : 'User.id'})
-    }
+    public id!: number;
+    title !:string;
+    likes : number;
+  description!: string;
+  userId! : number;
+    
   }
   Blogs.init({
     id:{
@@ -34,6 +31,12 @@ module.exports = (sequelize, DataTypes) => {
     {
       type: DataTypes.STRING,
     allowNull: false
+    },
+    likes: 
+    {
+      type: DataTypes.INTEGER,
+      defaultValue :0,
+    allowNull: false,
     },
     description: 
     {
@@ -47,8 +50,10 @@ module.exports = (sequelize, DataTypes) => {
     }
 
   }, {
-    sequelize,
+    sequelize: sequelizeConnection,
     modelName: 'Blogs',
   });
-  return Blogs;
-};
+
+
+
+  export default Blogs;

@@ -1,5 +1,7 @@
 'use strict';
-import {Model } from 'sequelize'
+import {DataTypes, Model } from 'sequelize'
+import sequelizeConnection from '../config';
+import Blogs from './blogs';
 
 
 interface UserAttributes 
@@ -10,7 +12,7 @@ interface UserAttributes
   password: string;
 
 } 
-module.exports = (sequelize, DataTypes) => {
+
   class User extends Model<UserAttributes> implements UserAttributes {
     /** 
      * Helper method for defining associations.
@@ -21,10 +23,7 @@ module.exports = (sequelize, DataTypes) => {
   name!: string;
   email! : string;
   password!: string;
-    static associate(models) {
-      User.hasMany(models.Blogs)
-      // define association here
-    }
+   
   }
   User.init({
     id: {
@@ -46,8 +45,9 @@ module.exports = (sequelize, DataTypes) => {
       allowNull: false,
     }
   }, {
-    sequelize,
+    sequelize: sequelizeConnection,
     modelName: 'User',
   });
-  return User;
-};
+ 
+
+  export default User;

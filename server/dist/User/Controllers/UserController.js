@@ -8,3 +8,4 @@ const router = express_1.default.Router();
 router.get('/Login', UserService_1.Login);
 router.post('/SignUp', UserService_1.signUp);
 module.exports = router;
+//# sourceMappingURL=UserController.js.map

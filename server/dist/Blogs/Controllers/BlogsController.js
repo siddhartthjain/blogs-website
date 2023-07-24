@@ -4,9 +4,14 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 };
 const express_1 = __importDefault(require("express"));
 const BlogsService_1 = require("../Service/BlogsService");
+const validate_1 = require("../../Validation/validate");
+const Dto_1 = require("../Service/Dto/");
+const jwtStartegy_1 = require("../../Jwt/jwtStartegy");
 const router = express_1.default.Router();
 router.get('/', BlogsService_1.getAllBlogs);
-router.post('/', BlogsService_1.createBlog);
-router.patch('/:id', BlogsService_1.updateBlog);
+router.use(jwtStartegy_1.authMiddleware);
+router.post('/', (0, validate_1.validationMiddleware)(Dto_1.CreateBlogDto), BlogsService_1.createBlog);
+router.patch('/:id', (0, validate_1.validationMiddleware)(Dto_1.UpdateBlogDto), BlogsService_1.updateBlog);
 router.delete('/:id', BlogsService_1.deleteBlog);
 module.exports = router;
+//# sourceMappingURL=BlogsController.js.map
