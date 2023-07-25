@@ -1,7 +1,7 @@
 'use strict';
 import {DataTypes, Model } from 'sequelize'
 import sequelizeConnection from '../config';
-import Blogs from './blogs';
+// import Blogs from './blogs';
 
 
 interface UserAttributes 
@@ -48,6 +48,5 @@ interface UserAttributes
     sequelize: sequelizeConnection,
     modelName: 'User',
   });
- 
-
+  
   export default User;

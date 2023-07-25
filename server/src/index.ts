@@ -11,7 +11,7 @@ const PORT = process.env.PORT
 // console.log("password is ", process.env.DB_PASSWORD);
 // route termlogy ("path", callbackfnc);
 app.use(bodyParser.json());
-// dbInit();
+dbInit();
 // console.log("i have passed db init");
 
 app.get("/", (req :Request ,res: Response)=>  

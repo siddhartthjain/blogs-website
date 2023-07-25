@@ -12,6 +12,7 @@ router.get('/', BlogsService_1.getAllBlogs);
 router.use(jwtStartegy_1.authMiddleware);
 router.post('/', (0, validate_1.validationMiddleware)(Dto_1.CreateBlogDto), BlogsService_1.createBlog);
 router.patch('/:id', (0, validate_1.validationMiddleware)(Dto_1.UpdateBlogDto), BlogsService_1.updateBlog);
+router.post('/like/:blogId', BlogsService_1.likeBlog);
 router.delete('/:id', BlogsService_1.deleteBlog);
 module.exports = router;
 //# sourceMappingURL=BlogsController.js.map

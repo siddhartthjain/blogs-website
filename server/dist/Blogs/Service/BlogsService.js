@@ -12,19 +12,35 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteBlog = exports.updateBlog = exports.createBlog = exports.getAllBlogs = void 0;
+exports.deleteBlog = exports.likeBlog = exports.updateBlog = exports.createBlog = exports.getAllBlogs = void 0;
 const blogs_1 = __importDefault(require("../../db/models/blogs"));
+const user_1 = __importDefault(require("../../db/models/user"));
+const likes_1 = __importDefault(require("../../db/models/likes"));
+const sequelize_1 = require("sequelize");
+const ifBlogExists = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("id is", id);
+    const blogExists = yield blogs_1.default.findByPk(id);
+    return blogExists;
+});
+const ifUserExists = (id) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("id is", id);
+    const userExists = user_1.default.findByPk(id);
+    return userExists;
+});
 const getAllBlogs = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // get all blogs for all user 
     try {
+        console.log("users asociations", user_1.default.associations);
+        console.log("Likes asociations", likes_1.default.associations);
+        console.log("blogs asociations", blogs_1.default.associations);
         const { userId } = req.query;
         console.log("req.oarams are", req.query);
         console.log("userId is", userId);
         const filter = userId ? { userId } : {};
-        const allBlogData = yield blogs_1.default.findAndCountAll({ where: filter });
+        // const allBlogData= await Blogs.findAll({include:'users'});
+        const allBlogData = yield blogs_1.default.findAll({ include: 'userliked' });
         console.log("all blog data", allBlogData);
-        const { rows, count } = allBlogData;
-        res.json({ rows, count });
+        res.json({ allBlogData });
     }
     catch (error) {
         console.log("error in getting Blog", error);
@@ -60,10 +76,11 @@ const updateBlog = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
                 throw new Error("You are not allowed npt update this blog");
             }
             else {
-                let oldLikes = blogExists.likes;
-                if (like) {
-                    like = oldLikes + like;
-                }
+                // let oldLikes= blogExists.likes;
+                // if(like)
+                // {
+                //  like= oldLikes+like;
+                // }
                 yield blogExists.update({ title, description, likes: like });
                 res.json({ message: "Blog updated succesfully" });
             }
@@ -75,6 +92,41 @@ const updateBlog = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
     }
 });
 exports.updateBlog = updateBlog;
+const likeBlog = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
+    console.log("req.parma", req.params);
+    const blogId = req.params.blogId;
+    console.log('blogid', +blogId);
+    const { liked } = req.body;
+    console.log("liked is ", liked);
+    const loggedUser = req.user;
+    const { id: loggedUserId } = loggedUser;
+    try {
+        console.log("blog id is", blogId);
+        const blogExists = yield ifBlogExists(+blogId);
+        if (blogExists && liked) {
+            const obj = {
+                userId: +loggedUserId,
+                blogId: +blogId
+            };
+            yield likes_1.default.create(obj);
+            const oldLikes = blogExists.likes;
+            yield blogExists.update({ likes: oldLikes + 1 });
+        }
+        else if (blogExists && !liked) {
+            const deletedRow = yield likes_1.default.destroy({ where: { [sequelize_1.Op.and]: [{ blogId: blogExists.id }, { userId: loggedUserId }] } });
+            const oldLikes = blogExists.likes;
+            if (deletedRow) {
+                yield blogExists.update({ likes: oldLikes - 1 });
+            }
+        }
+        res.status(200).json("Blog liked/disliked Succesfully");
+    }
+    catch (error) {
+        console.log(error);
+        res.status(500).json("Not able to like the Blog");
+    }
+});
+exports.likeBlog = likeBlog;
 const deleteBlog = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _b;
     const BlogId = req.params.id;

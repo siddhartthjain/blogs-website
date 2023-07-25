@@ -10,10 +10,12 @@
     "forceConsistentCasingInFileNames": true,
     "emitDecoratorMetadata": true,
     "experimentalDecorators": true, 
-    "strictPropertyInitialization": false,      
+    "strictPropertyInitialization": false, 
+    "jsx": "preserve",     
   },
   "include": [
-    "src/*.ts", "src/Types/types.d.ts",
+    "src/*.ts",
+    "src/Types/types.d.ts"
   ], // matches all ts files in directory and subdirectory
   // "exclude": [
   //   "./node_modules",
