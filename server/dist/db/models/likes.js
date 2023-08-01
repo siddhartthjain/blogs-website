@@ -31,26 +31,18 @@ Likes.init({
     modelName: 'Likes'
 });
 blogs_1.default.belongsToMany(user_1.default, {
-    as: 'userliked',
+    as: 'likedUsers',
     through: Likes,
     foreignKey: 'blogId',
     otherKey: 'userId', // The foreign key in the junction table referencing the Users model
 });
 user_1.default.belongsToMany(blogs_1.default, {
-    as: 'blogsliked',
+    as: 'likedBlogs',
     through: Likes,
     foreignKey: 'userId',
     otherKey: 'blogId',
 });
-Likes.belongsToMany(blogs_1.default, {
-    through: Likes,
-    foreignKey: 'blogId',
-    otherKey: 'userId',
-});
-Likes.belongsToMany(user_1.default, {
-    through: Likes,
-    foreignKey: 'userId',
-    otherKey: 'blogId',
-});
+Likes.belongsTo(blogs_1.default, { foreignKey: "blogId" });
+Likes.belongsTo(user_1.default, { foreignKey: "userId" });
 exports.default = Likes;
 //# sourceMappingURL=likes.js.map

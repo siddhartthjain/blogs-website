@@ -12,7 +12,7 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.login = exports.signUp = void 0;
+exports.loginPage = exports.login = exports.signUp = void 0;
 const bcrypt_1 = __importDefault(require("bcrypt"));
 const user_1 = __importDefault(require("../../db/models/user"));
 const jsonwebtoken_1 = __importDefault(require("jsonwebtoken"));
@@ -26,7 +26,7 @@ const signUp = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const userExists = yield user_1.default.findOne({ where: { email: userBody.email } });
         if (userExists) {
-            res.json({ message: "User already exists" });
+            res.status(400).json({ message: "User already exists" });
         }
         else {
             const user = yield user_1.default.create(userBody);
@@ -67,4 +67,8 @@ const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     }
 });
 exports.login = login;
+const loginPage = (req, res) => {
+    res.render('login');
+};
+exports.loginPage = loginPage;
 //# sourceMappingURL=AuthService.js.map

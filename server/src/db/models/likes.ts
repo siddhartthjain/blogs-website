@@ -49,28 +49,18 @@ Likes.init({
 });
 
 Blogs.belongsToMany(User, {
-    as:'userliked',   // this is important and will tell which user has liked a particluar blog 
+    as:'likedUsers',   // this is important and will tell which user has liked a particluar blog 
     through: Likes,       // Junction table name (Likes model)
     foreignKey: 'blogId', // The foreign key in the junction table referencing the Blogs model
     otherKey: 'userId',   // The foreign key in the junction table referencing the Users model
   });
   User.belongsToMany(Blogs, {
-    as:'blogsliked',    // which blog is liked by particluar user
+    as:'likedBlogs',    // which blog is liked by particluar user
     through: Likes,       
     foreignKey: 'userId', 
     otherKey: 'blogId',   
   });
-  Likes.belongsToMany(Blogs, {
-
-    through: Likes, // Replace with the actual junction table name if different
-    foreignKey: 'blogId',
-    otherKey: 'userId',
-  });
-  Likes.belongsToMany(User, {
-   
-    through: Likes, // Replace with the actual junction table name if different
-    foreignKey: 'userId',
-    otherKey: 'blogId',
-  });
+ Likes.belongsTo(Blogs, {foreignKey:"blogId"});
+ Likes.belongsTo(User, {foreignKey:"userId"});
   
 export default Likes;

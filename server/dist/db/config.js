@@ -6,11 +6,18 @@ Object.defineProperty(exports, "__esModule", { value: true });
 const dotenv_1 = __importDefault(require("dotenv"));
 dotenv_1.default.config();
 const sequelize_1 = require("sequelize");
-const dbHost = process.env.DB_HOST;
-const dbDriver = process.env.DB_DRIVER;
-const dbUsername = process.env.DB_USERNAME;
-const dbName = process.env.DB_DATABASE;
-const dbPassword = process.env.DB_PASSWORD;
+let dbHost = process.env.DB_HOST;
+let dbDriver = process.env.DB_DRIVER;
+let dbUsername = process.env.DB_USERNAME;
+let dbName = process.env.DB_DATABASE;
+let dbPassword = process.env.DB_PASSWORD;
+if (process.env.NODE_ENV == 'test') {
+    dbHost = process.env.DB_HOST;
+    dbDriver = process.env.DB_DRIVER;
+    dbUsername = process.env.DB_USERNAME;
+    dbName = process.env.DB_DATABASE_TEST;
+    dbPassword = process.env.DB_PASSWORD;
+}
 const sequelizeConnection = new sequelize_1.Sequelize(dbName, dbUsername, dbPassword, {
     host: dbHost,
     dialect: dbDriver,

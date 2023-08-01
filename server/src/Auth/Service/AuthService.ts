@@ -15,7 +15,7 @@ export const  signUp= async (req: Request,  res: Response)=>
    const userExists= await User.findOne({where: {email: userBody.email}});
    if(userExists)
    {
-      res.json({message: "User already exists"});
+      res.status(400).json({message: "User already exists"});
    }
    else{
      const user = await User.create(userBody);
@@ -31,6 +31,7 @@ export const  signUp= async (req: Request,  res: Response)=>
 
 export const login = async (req:Request , res : Response)=>
 {
+   
    try {
        const {email,password}= req.body;
    const userExists= await User.findOne({where:{email:email}});
@@ -61,3 +62,7 @@ export const login = async (req:Request , res : Response)=>
   
 }
 
+export const loginPage = (req:Request, res:Response)=>
+{
+   res.render('login');
+}

@@ -6,9 +6,9 @@ import User from './user';
 
   interface BlogsAttributes 
 {
-  id:number
+  id?:number
   title:string;
-  likes:number;
+  likes?:number;
   description: string;
   userId : number;
 

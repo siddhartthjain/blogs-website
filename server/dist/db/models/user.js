@@ -24,7 +24,11 @@ User.init({
     },
     password: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: false,
+        allowNull: true,
+    },
+    provider: {
+        type: sequelize_1.DataTypes.STRING,
+        allowNull: true
     }
 }, {
     sequelize: config_1.default,

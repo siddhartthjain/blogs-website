@@ -6,10 +6,11 @@ import sequelizeConnection from '../config';
 
 interface UserAttributes 
 {
-  id:number;
+  id?:number;
   name: string;
   email : string;
-  password: string;
+  password?: string;
+  provider?:string;
 
 } 
 
@@ -22,7 +23,8 @@ interface UserAttributes
    id!:number;
   name!: string;
   email! : string;
-  password!: string;
+  password: string;
+  provider:string;
    
   }
   User.init({
@@ -42,7 +44,12 @@ interface UserAttributes
     },
     password: {
       type: DataTypes.STRING,
-      allowNull: false,
+      allowNull: true,
+    },
+    provider:
+    {
+      type:DataTypes.STRING,
+      allowNull:true
     }
   }, {
     sequelize: sequelizeConnection,

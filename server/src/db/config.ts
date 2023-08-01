@@ -2,11 +2,20 @@ import dotenv from 'dotenv'
 dotenv.config();
 import { Dialect, Sequelize } from "sequelize";
 
-const dbHost = process.env.DB_HOST;
-const dbDriver = process.env.DB_DRIVER as Dialect;
-const dbUsername= process.env.DB_USERNAME as string;
-const dbName = process.env.DB_DATABASE as string;
-const dbPassword= process.env.DB_PASSWORD
+let dbHost = process.env.DB_HOST;
+let dbDriver = process.env.DB_DRIVER as Dialect;
+let dbUsername= process.env.DB_USERNAME as string;
+let dbName = process.env.DB_DATABASE as string;
+let dbPassword= process.env.DB_PASSWORD
+
+if(process.env.NODE_ENV == 'test')
+{
+ dbHost = process.env.DB_HOST;
+ dbDriver = process.env.DB_DRIVER as Dialect;
+ dbUsername= process.env.DB_USERNAME as string;
+ dbName = process.env.DB_DATABASE_TEST as string;
+ dbPassword= process.env.DB_PASSWORD
+}
  
 const sequelizeConnection = new Sequelize(dbName,dbUsername, dbPassword,{
     host: dbHost,

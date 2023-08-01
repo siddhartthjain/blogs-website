@@ -6,9 +6,9 @@ import {authMiddleware} from '../../Jwt/jwtStartegy';
 const router = express.Router();
 
 
-router.get('/', getAllBlogs);
+router.get('/allBlogs', getAllBlogs);
 router.use(authMiddleware)
-
+router.get('/', getAllBlogs);
 router.post('/',validationMiddleware(CreateBlogDto), createBlog);
 router.patch('/:id',validationMiddleware(UpdateBlogDto), updateBlog);
 router.post('/like/:blogId', likeBlog)
