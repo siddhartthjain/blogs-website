@@ -41,26 +41,26 @@ export const getAllBlogs = async (req: Request, res: Response) => {
       order:[[sortBy,sortOrder]]
      
     });
-
-    if(req.user)
-    {
+    res.json({ allBlogsData });
+    // if(req.user)
+    // {
       
-      const {id:loggedUserId}= req.user;
-      console.log("id is ", loggedUserId);
-      const updatedBlogs =Object.values(allBlogsData).forEach((blog:Record<string,any>) => {
-        const idExists: Boolean = blog.likedUsers.some((user:Record<string,any>) => user.id === loggedUserId);
-        Object.assign(blog, {liked:idExists})
-        return blog;
-      });
-      console.log("blogs data ",updatedBlogs);
-      res.json({updatedBlogs});
+    //   const {id:loggedUserId}= req.user;
+    //   console.log("id is ", loggedUserId);
+    //   const updatedBlogs =Object.values(allBlogsData).forEach((blog:Record<string,any>) => {
+    //     const idExists: Boolean = blog.likedUsers.some((user:Record<string,any>) => user.id === loggedUserId);
+    //     Object.assign(blog, {liked:idExists})
+    //     return blog;
+    //   });
+    //   console.log("blogs data ",updatedBlogs);
+    //   res.json({updatedBlogs});
 
 
 
-    }
-    else{
-      res.json({ allBlogsData });
-    }
+    // }
+    // else{
+    //   res.json({ allBlogsData });
+    // }
 
     // console.log("all blog data", allBlogData);
 
@@ -94,14 +94,9 @@ export const updateBlog = async (req: Request, res: Response) => {
     const blogExists = await Blogs.findByPk(BlogId);
     if (blogExists) {
       let { title, description, like } = req.body;
-      if (title || (description && blogExists.id !== loggedUserid)) {
+      if ((title || description) && blogExists.userId !== loggedUserid) {
         throw new Error("You are not allowed npt update this blog");
       } else {
-        // let oldLikes= blogExists.likes;
-        // if(like)
-        // {
-        //  like= oldLikes+like;
-        // }
         await blogExists.update({ title, description, likes: like });
         res.json({ message: "Blog updated succesfully" });
       }
@@ -118,7 +113,7 @@ export const likeBlog = async (req: Request, res: Response) => {
   console.log("blogid", +blogId);
 
   const { liked } = req.body;
-  console.log("liked is ", liked);
+  console.log("liked is ", liked);  
   const loggedUser = req.user as Record<string, any>;
   const { id: loggedUserId } = loggedUser;
   try {
@@ -132,6 +127,7 @@ export const likeBlog = async (req: Request, res: Response) => {
       await Likes.create(obj);
       const oldLikes = blogExists.likes;
       await blogExists.update({ likes: oldLikes + 1 });
+      res.status(200).json("Blog liked Succesfully");
     } else if (blogExists && !liked) {
       const deletedRow = await Likes.destroy({
         where: {
@@ -141,9 +137,10 @@ export const likeBlog = async (req: Request, res: Response) => {
       const oldLikes = blogExists.likes;
       if (deletedRow) {
         await blogExists.update({ likes: oldLikes - 1 });
+        res.status(200).json("Blog disliked Succesfully");
       }
     }
-    res.status(200).json("Blog liked/disliked Succesfully");
+   
   } catch (error) {
     console.log(error);
     res.status(500).json("Not able to like the Blog");

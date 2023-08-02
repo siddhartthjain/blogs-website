@@ -7,7 +7,7 @@ import passport from 'passport';
 const router = express.Router();
 
 router.get('/LoginPage',loginPage)
-router.get('/Login', validationMiddleware(LoginDto),login);
+router.post('/Login', validationMiddleware(LoginDto),login);
 router.post('/SignUp', validationMiddleware(SignupDto),signUp);
 router.get('/google', passport.authenticate('google',{scope:["email", "profile"],}))
 router.get("/google/redirect", passport.authenticate("google"), (req, res) => {

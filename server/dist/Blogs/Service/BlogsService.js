@@ -41,24 +41,26 @@ const getAllBlogs = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         const allBlogsData = yield blogs_1.default.findAll({
             where: filter,
             include: [{ model: user_1.default, as: "likedUsers", attributes: ["id", "email"], through: { attributes: [] } }],
-            limit: page && items ? +items : 1,
+            limit: page && items ? +items : 5,
             offset: offset,
             order: [[sortBy, sortOrder]]
         });
-        if (req.user) {
-            const { id: loggedUserId } = req.user;
-            console.log("id is ", loggedUserId);
-            const updatedBlogs = Object.values(allBlogsData).forEach((blog) => {
-                const idExists = blog.likedUsers.some((user) => user.id === loggedUserId);
-                Object.assign(blog, { liked: idExists });
-                return blog;
-            });
-            console.log("blogs data ", updatedBlogs);
-            res.json({ updatedBlogs });
-        }
-        else {
-            res.json({ allBlogsData });
-        }
+        res.json({ allBlogsData });
+        // if(req.user)
+        // {
+        //   const {id:loggedUserId}= req.user;
+        //   console.log("id is ", loggedUserId);
+        //   const updatedBlogs =Object.values(allBlogsData).forEach((blog:Record<string,any>) => {
+        //     const idExists: Boolean = blog.likedUsers.some((user:Record<string,any>) => user.id === loggedUserId);
+        //     Object.assign(blog, {liked:idExists})
+        //     return blog;
+        //   });
+        //   console.log("blogs data ",updatedBlogs);
+        //   res.json({updatedBlogs});
+        // }
+        // else{
+        //   res.json({ allBlogsData });
+        // }
         // console.log("all blog data", allBlogData);
     }
     catch (error) {
@@ -91,15 +93,10 @@ const updateBlog = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         const blogExists = yield blogs_1.default.findByPk(BlogId);
         if (blogExists) {
             let { title, description, like } = req.body;
-            if (title || (description && blogExists.id !== loggedUserid)) {
+            if ((title || description) && blogExists.userId !== loggedUserid) {
                 throw new Error("You are not allowed npt update this blog");
             }
             else {
-                // let oldLikes= blogExists.likes;
-                // if(like)
-                // {
-                //  like= oldLikes+like;
-                // }
                 yield blogExists.update({ title, description, likes: like });
                 res.json({ message: "Blog updated succesfully" });
             }
@@ -130,6 +127,7 @@ const likeBlog = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             yield likes_1.default.create(obj);
             const oldLikes = blogExists.likes;
             yield blogExists.update({ likes: oldLikes + 1 });
+            res.status(200).json("Blog liked Succesfully");
         }
         else if (blogExists && !liked) {
             const deletedRow = yield likes_1.default.destroy({
@@ -140,9 +138,9 @@ const likeBlog = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
             const oldLikes = blogExists.likes;
             if (deletedRow) {
                 yield blogExists.update({ likes: oldLikes - 1 });
+                res.status(200).json("Blog disliked Succesfully");
             }
         }
-        res.status(200).json("Blog liked/disliked Succesfully");
     }
     catch (error) {
         console.log(error);

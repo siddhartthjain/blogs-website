@@ -25,6 +25,7 @@ __decorate([
     __metadata("design:type", String)
 ], UpdateBlogDto.prototype, "description", void 0);
 __decorate([
+    (0, class_validator_1.ValidateIf)(o => (!o.title && !o.description)),
     (0, class_validator_1.IsOptional)(),
     __metadata("design:type", Boolean)
 ], UpdateBlogDto.prototype, "like", void 0);

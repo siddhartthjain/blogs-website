@@ -1,4 +1,4 @@
-import { IsDefined, IsNotEmpty, IsOptional } from "class-validator";
+import { IsDefined, IsNotEmpty, IsOptional, ValidateIf } from "class-validator";
 
 export class UpdateBlogDto
 {
@@ -11,8 +11,9 @@ export class UpdateBlogDto
     @IsOptional()
     @IsNotEmpty()
     description: string;
-
-    @IsOptional()
+    
+    @ValidateIf(o=> (!o.title && !o.description))
+    @IsOptional()   
     like:boolean
 
 }

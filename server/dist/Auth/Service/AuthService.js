@@ -43,6 +43,7 @@ exports.signUp = signUp;
 const login = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     try {
         const { email, password } = req.body;
+        console.log("body", req.body);
         const userExists = yield user_1.default.findOne({ where: { email: email } });
         if (userExists) {
             const userPassword = userExists === null || userExists === void 0 ? void 0 : userExists.password;

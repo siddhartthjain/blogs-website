@@ -7,6 +7,9 @@ import dbInit from './db/init';
 import "./config/passport";
 import session from 'express-session';
 import passport from 'passport';
+import * as swaggerDocument from './swagger.json'
+import swaggerUi from 'swagger-ui-express'
+import swaggerJSDoc from 'swagger-jsdoc';
 
 dotenv.config();// read env file
 const app = express(); // make a app from express
@@ -32,7 +35,9 @@ app.use(session({
     
  app.use('/Blogs', BlogsController);
  app.use('/Auth', AuthController)
- 
+
+  app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+//  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.listen(PORT,()=>{
     console.log(`server is running on ${PORT}`);
 })

@@ -1,0 +1,418 @@
+{
+    "swagger": "2.0",
+    "info": {
+        "version": "1.0.0",
+        "title": "Blog API",
+        "description": "This is simple Blog application made with TypeScript, nodejs, sequelize. The app consists of two fundamental model Blogs and User . A user without loggging can only get The blogs else for other activities for eg Creating , updating , deleting , like and dislike user has to login to the application. All the routes are defined below. Ps : Once you login Please use the Authorization token When using a authorised route with Bearer as Prefix"
+    },
+    "securityDefinitions": {
+        "JWTAuth": {
+            "type": "apiKey",
+            "name": "Authorization",
+            "in": "header"
+        }
+    },
+    "definitions": {
+        "Blog": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "title": {
+                    "type": "string"
+                },
+                "description": {
+                    "type": "string"
+                },
+                "likes": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "userId": {
+                    "type": "integer",
+                    "format": "int32"
+                }
+            }
+        },
+        "User": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "name": {
+                    "type": "string"
+                },
+                "email": {
+                    "type": "string",
+                    "format": "email"
+                },
+                "provider": {
+                    "type": "string"
+                },
+                "Password": {
+                    "type": "string",
+                    "format": "password"
+                }
+            }
+        },
+        "Likes": {
+            "type": "object",
+            "properties": {
+                "userId": {
+                    "type": "integer",
+                    "format": "int32"
+                },
+                "blogId": {
+                    "type": "integer",
+                    "format": "int32"
+                }
+            }
+        }
+    },
+    "paths": {
+        "/Auth/SignUp": {
+            "post": {
+                "summary": "sigin up of user",
+                "description": "Sign up of user Email should be unique",
+                "parameters": [
+                    {
+                        "name": "userObject",
+                        "in": "body",
+                        "description": "User Information ",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "name": {
+                                    "type": "string"
+                                },
+                                "email": {
+                                    "type": "string",
+                                    "format": "email"
+                                },
+                                "password": {
+                                    "type": "string",
+                                    "format": "password",
+                                    "description": "should be strong min 8 Characters and must include uppercasem lowercase and special character",
+                                    "default": "PassW0rd!"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User Created successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/Auth/Login": {
+            "post": {
+                "summary": "Login of user",
+                "parameters": [
+                    {
+                        "name": "userObject",
+                        "in": "body",
+                        "description": "User Information",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "email": {
+                                    "type": "string",
+                                    "format": "email",
+                                    "default": "user@example.com"
+                                },
+                                "password": {
+                                    "type": "string",
+                                    "format": "password",
+                                    "default": "PassW0rd!"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "User logged in successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/Blogs/allblogs": {
+            "get": {
+                "summary": "Get all blogs without authentification",
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "type": "integer",
+                        "required": false,
+                        "default": 0,
+                        "description": "setting offset to prevous blogs"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "type": "integer",
+                        "required": false,
+                        "default": 10,
+                        "maximum": 100,
+                        "description": "limit to get particular no of blogs"
+                    },
+                    {
+                        "name": "userId",
+                        "in": "query",
+                        "type": "integer",
+                        "required": false,
+                        "description": "user id of valid user whoms blog to filter out"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    }
+                }
+            }
+        },
+        "/Blogs": {
+            "get": {
+                "summary": "Get all blogs after authentification",
+                "security": [
+                    {
+                        "JWTAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "offset",
+                        "in": "query",
+                        "type": "integer",
+                        "required": false,
+                        "default": 0,
+                        "description": "setting offset to prevous blogs"
+                    },
+                    {
+                        "name": "limit",
+                        "in": "query",
+                        "type": "integer",
+                        "required": false,
+                        "default": 10,
+                        "maximum": 100,
+                        "description": "limit to get particular no of blogs"
+                    },
+                    {
+                        "name": "userId",
+                        "in": "query",
+                        "type": "integer",
+                        "required": false,
+                        "description": "user id of valid user whoms blog to filter out"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Successful operation"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    },
+                    "401": {
+                        "description": "Unauthorised"
+                    }
+                }
+            },
+            "post": {
+                "summary": "Create a new blog",
+                "security": [
+                    {
+                        "JWTAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "blogData",
+                        "in": "body",
+                        "description": "Blog data to be created",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "type": "string"
+                                },
+                                "description": {
+                                    "type": "string"
+                                },
+                                "userId": {
+                                    "type": "integer"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "201": {
+                        "description": "Blog created successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    },
+                    "401": {
+                        "description": "Unauthorised"
+                    }
+                }
+            }
+        },
+        "/Blogs/{id}": {
+            "patch": {
+                "summary": "Update a  blog",
+                "security": [
+                    {
+                        "JWTAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id of the  blog to be updated created by Logged in User only",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "blogData",
+                        "in": "body",
+                        "description": "Blog data to be updated",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "title": {
+                                    "type": "string"
+                                },
+                                "description": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Blog updated successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    },
+                    "401": {
+                        "description": "Unauthorised"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a blog",
+                "security": [
+                    {
+                        "JWTAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id of the  blog to be Deleted created by Logged in User only",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Blog deleted successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    },
+                    "401": {
+                        "description": "Unauthorised"
+                    }
+                }
+            }
+        },
+        "/Blogs/like/{blogId}": {
+            "post": {
+                "summary": "Like a blog",
+                "security": [
+                    {
+                        "JWTAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "blogId",
+                        "type": "integer",
+                        "in": "path",
+                        "required": true,
+                        "description": "Blog id of Blog which you are going to like"
+                    },
+                    {
+                        "name": "Liked",
+                        "in": "body",
+                        "required": true,
+                        "description": "whether you liked the post or disliked the post",
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "liked": {
+                                    "type": "boolean"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Blog liked / disliked succesfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    },
+                    "401": {
+                        "description": "Unauthorised"
+                    }
+                }
+            }
+        }
+    }
+}

@@ -21,7 +21,7 @@ describe("Server.ts tests", () => {
 
   describe("login user ",  ()=>{
     it(" returns 200 when user signin with correct credentials", async()=>{
-        const res = await  request(app).get("/auth/Login").send({email:"sid@gmail.com", password:"PassW0rd!"})  
+        const res = await  request(app).post("/auth/Login").send({email:"sid@gmail.com", password:"PassW0rd!"})  
         expect(res.statusCode).toBe(200);
     })
   })
