@@ -14,12 +14,11 @@ import swaggerJSDoc from 'swagger-jsdoc';
 dotenv.config();// read env file
 const app = express(); // make a app from express
 const PORT = process.env.PORT
-// console.log("port is", PORT);
-// console.log("password is ", process.env.DB_PASSWORD);
+
 // route termlogy ("path", callbackfnc);
 app.use(bodyParser.json());
 // dbInit();
-// console.log("i have passed db init");
+
 
 app.set('view engine', "ejs")
 
@@ -37,7 +36,7 @@ app.use(session({
  app.use('/Auth', AuthController)
 
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
-//  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
+
 app.listen(PORT,()=>{
     console.log(`server is running on ${PORT}`);
 })

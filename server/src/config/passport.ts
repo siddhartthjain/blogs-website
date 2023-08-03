@@ -22,9 +22,6 @@ passport.use(
     
     },
     async (accessToken, refreshToken, profile:any, done) => {
-      console.log("acessToken ",accessToken);
-      console.log("refreshToken",refreshToken);
-      console.log("profile",profile);
       if(profile)
       {
          const {emails, displayName, provider}= profile;
@@ -43,9 +40,7 @@ passport.use(
       const token = jwt.sign(payload, secretKey, {expiresIn :'6d'})
       done(null,token);
       }
-     
-
-    //   console.log(done)
+    
     }
   )
 );

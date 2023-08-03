@@ -29,9 +29,6 @@ passport_1.default.use(new GoogleStrategy({
     clientSecret: process.env.GOOGLE_CLIENT_SECRET,
     callbackURL: "/auth/google/redirect",
 }, (accessToken, refreshToken, profile, done) => __awaiter(void 0, void 0, void 0, function* () {
-    console.log("acessToken ", accessToken);
-    console.log("refreshToken", refreshToken);
-    console.log("profile", profile);
     if (profile) {
         const { emails, displayName, provider } = profile;
         const userEmailid = emails ? emails[0].value : "";
@@ -47,6 +44,5 @@ passport_1.default.use(new GoogleStrategy({
         const token = jsonwebtoken_1.default.sign(payload, secretKey, { expiresIn: '6d' });
         done(null, token);
     }
-    //   console.log(done)
 })));
 //# sourceMappingURL=passport.js.map

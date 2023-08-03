@@ -266,10 +266,7 @@
                 },
                 "description": {
                   "type": "string"
-                },
-                "userId": {
-                  "type": "integer"
-                }
+                } 
               }
             }
           }

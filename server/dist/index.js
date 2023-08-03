@@ -38,12 +38,9 @@ const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 dotenv_1.default.config(); // read env file
 const app = (0, express_1.default)(); // make a app from express
 const PORT = process.env.PORT;
-// console.log("port is", PORT);
-// console.log("password is ", process.env.DB_PASSWORD);
 // route termlogy ("path", callbackfnc);
 app.use(body_parser_1.default.json());
 // dbInit();
-// console.log("i have passed db init");
 app.set('view engine', "ejs");
 app.get("/", (req, res) => {
     res.send("Express and typescript server");
@@ -56,7 +53,6 @@ app.use((0, express_session_1.default)({
 app.use('/Blogs', BlogsController_1.default);
 app.use('/Auth', AuthController_1.default);
 app.use("/api-docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerDocument));
-//  app.use('/api-docs', swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 app.listen(PORT, () => {
     console.log(`server is running on ${PORT}`);
 });
