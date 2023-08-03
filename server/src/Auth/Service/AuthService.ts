@@ -34,7 +34,7 @@ export const login = async (req:Request , res : Response)=>
    
    try {
        const {email,password}= req.body;
-       console.log("body", req.body);
+       
    const userExists= await User.findOne({where:{email:email}});
    if(userExists)
    {

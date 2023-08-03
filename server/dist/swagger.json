@@ -183,6 +183,13 @@
                         "type": "integer",
                         "required": false,
                         "description": "user id of valid user whoms blog to filter out"
+                    },
+                    {
+                        "name": "blogId",
+                        "in": "query",
+                        "type": "integer",
+                        "required": false,
+                        "description": "specific blog id you want to see"
                     }
                 ],
                 "responses": {
@@ -227,6 +234,13 @@
                         "type": "integer",
                         "required": false,
                         "description": "user id of valid user whoms blog to filter out"
+                    },
+                    {
+                        "name": "blogId",
+                        "in": "query",
+                        "type": "integer",
+                        "required": false,
+                        "description": "specific blog id you want to see"
                     }
                 ],
                 "responses": {

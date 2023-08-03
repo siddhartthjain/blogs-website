@@ -6,7 +6,7 @@ dotenv.config();
 
 export const authMiddleware = (req:Request, res: Response, next: NextFunction)=>
 {
-    console.log("i am in auth middle wares");
+    
     try {
         const secretKey= process.env.SECRET_KEY as string;
         const token = req.header('Authorization')?.replace('Bearer ',"");
