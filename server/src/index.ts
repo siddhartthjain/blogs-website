@@ -2,6 +2,8 @@ import express, {Request, Response} from 'express'
 import dotenv from 'dotenv'
 import BlogsController from './Blogs/Controllers/BlogsController';
 import AuthController from './Auth/Controllers/AuthController';
+import commentController from './Comments/Controller/commentsController'
+import TagsController from "./Tags/Controller/tagsController"
 import bodyParser from 'body-parser';
 import dbInit from './db/init';
 import "./config/passport";
@@ -17,7 +19,9 @@ const PORT = process.env.PORT
 
 // route termlogy ("path", callbackfnc);
 app.use(bodyParser.json());
-// dbInit();
+app.use(express.json());
+app.use(express.urlencoded({ extended: true }));
+dbInit();
 
 
 app.set('view engine', "ejs")
@@ -31,10 +35,12 @@ app.use(session({
     saveUninitialized: true,
     secret: "SECRET"}))
 
-    
+ 
+app.use('/Blogs/:id/comment', commentController);  
+app.use("/Blogs/:id/Tags", TagsController) 
  app.use('/Blogs', BlogsController);
- app.use('/Auth', AuthController)
-
+ app.use('/Auth', AuthController);
+ 
   app.use("/api-docs", swaggerUi.serve, swaggerUi.setup(swaggerDocument));
 
 app.listen(PORT,()=>{

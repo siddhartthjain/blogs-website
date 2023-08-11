@@ -15,32 +15,32 @@ Likes.init({
         allowNull: false,
         references: {
             model: user_1.default,
-            key: 'id'
-        }
+            key: "id",
+        },
     },
     blogId: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
         references: {
             model: blogs_1.default,
-            key: 'id'
-        }
-    }
+            key: "id",
+        },
+    },
 }, {
     sequelize: config_1.default,
-    modelName: 'Likes'
+    modelName: "Likes",
 });
 blogs_1.default.belongsToMany(user_1.default, {
-    as: 'likedUsers',
+    as: "likedUsers",
     through: Likes,
-    foreignKey: 'blogId',
-    otherKey: 'userId', // The foreign key in the junction table referencing the Users model
+    foreignKey: "blogId",
+    otherKey: "userId", // The foreign key in the junction table referencing the Users model
 });
 user_1.default.belongsToMany(blogs_1.default, {
-    as: 'likedBlogs',
+    as: "likedBlogs",
     through: Likes,
-    foreignKey: 'userId',
-    otherKey: 'blogId',
+    foreignKey: "userId",
+    otherKey: "blogId",
 });
 Likes.belongsTo(blogs_1.default, { foreignKey: "blogId" });
 Likes.belongsTo(user_1.default, { foreignKey: "userId" });

@@ -1,8 +1,13 @@
 import { Request, Response } from "express";
 import Blogs from "../../db/models/blogs";
 import User from "../../db/models/user";
+import Comments from "../../db/models/comments";
 import Likes from "../../db/models/likes";
+import filter from "../Dto/filterDto"
+import { postTagsService } from "../../Tags/Services/tagsService";
 import { Op } from "sequelize";
+import Tags from "../../db/models/tags";
+import { error } from "console";
 
 const ifBlogExists = async (id: number) => {
   const blogExists = await Blogs.findByPk(id);
@@ -16,30 +21,67 @@ const ifUserExists = async (id: number) => {
 
 export const getAllBlogs = async (req: Request, res: Response) => {
   // get all blogs for all user
+  // console.log("blogs associations", Blogs.associations)
   try {
-    const { userId, blogId, items, page, sort } = req.query;
+    const { userId, blogId, items, page, sort,tags} = req.query;
 
-    const filter = userId
-      ? blogId
-        ? { userId, id: blogId }
-        : { userId }
-      : blogId
-      ? { id: blogId }
-      : ({} as any);
+    let filter:any={};
+    if(userId)
+    {
+      filter.userId= userId
+    }
+    if(blogId)
+    {
+      filter.id=blogId
+    }
+    console.log(typeof tags)
+    let tagsFilter = tags?(tags):null
+    console.log("tagsFilter", tagsFilter)
+    // if(tagsFilter)
+    // [
+    //   filter = {'$blogTags.tag$':{[Op.in]:tagsFilter}}
+    // ]
+
+
     const sortBy = "createdAt";
     const sortOrder = sort ? sort : ("DESC" as any);
 
     const offset = page && items ? (+page - 1) * +items : 0;
     const allBlogsData: Record<string, any> = await Blogs.findAll({
-      where: filter,
+      
       include: [
         {
           model: User,
-          as: "likedUsers",
+          as: "likedUsers",             
           attributes: ["id", "email"],
           through: { attributes: [] },
         },
+        {
+          model: Comments,
+          as: "CommentsOnBLog",
+          required:false, // left join because i want all blogs 
+          where:{
+            parentId: null  // select those whose parent is NULL 
+          },
+          include:[
+            {
+              model:Comments,
+              as:'replies',
+              attributes :['id','userId','comment']
+            }
+          ],
+          attributes: ["id","userId", "comment"],
+        },
+        {
+          model: Tags,
+          as:'blogTags',
+          required: tags?true: false, // if tags are present then inner join else outer join 
+          where: tags ? { tag: { [Op.in]: tagsFilter } } : {},
+          attributes :["id", "tag"],
+          through:{attributes:[]}
+        }
       ],
+      where: filter,
       limit: page && items ? +items : 5,
       offset: offset,
       order: [[sortBy, sortOrder]],
@@ -69,13 +111,28 @@ export const getAllBlogs = async (req: Request, res: Response) => {
 };
 
 export const createBlog = async (req: Request, res: Response) => {
-  const blogdata = req.body;
+  const {tags,...blogdata} = req.body;
   blogdata.userId = req.user?.id;
 
   try {
     const createdBlog = await Blogs.create(blogdata);
-    console.log("blog created with blog id is ", createdBlog.id);
-    return res.status(201).json(createdBlog);
+    if(createdBlog && tags)
+    {
+      try {
+        if(await postTagsService(blogdata.userId, createdBlog.id,tags))
+        {
+          res.status(201).json({message: "Blog created Succesfully"});
+        }
+        else{
+          throw new Error ("Blog not posted")
+        }
+      } catch (error) {
+        console.log(error)
+        
+      }
+    }
+
+    
   } catch (error) {
     console.log("error in creating blog", error);
     res.status(500).json({ error: "Failed to create blog" });
@@ -165,3 +222,4 @@ export const deleteBlog = async (req: Request, res: Response) => {
     res.status(500).json({ error: "Failed to delete blog" });
   }
 };
+

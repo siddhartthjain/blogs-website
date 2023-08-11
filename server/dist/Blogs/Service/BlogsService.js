@@ -8,6 +8,17 @@ var __awaiter = (this && this.__awaiter) || function (thisArg, _arguments, P, ge
         step((generator = generator.apply(thisArg, _arguments || [])).next());
     });
 };
+var __rest = (this && this.__rest) || function (s, e) {
+    var t = {};
+    for (var p in s) if (Object.prototype.hasOwnProperty.call(s, p) && e.indexOf(p) < 0)
+        t[p] = s[p];
+    if (s != null && typeof Object.getOwnPropertySymbols === "function")
+        for (var i = 0, p = Object.getOwnPropertySymbols(s); i < p.length; i++) {
+            if (e.indexOf(p[i]) < 0 && Object.prototype.propertyIsEnumerable.call(s, p[i]))
+                t[p[i]] = s[p[i]];
+        }
+    return t;
+};
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -15,8 +26,11 @@ Object.defineProperty(exports, "__esModule", { value: true });
 exports.deleteBlog = exports.likeBlog = exports.updateBlog = exports.createBlog = exports.getAllBlogs = void 0;
 const blogs_1 = __importDefault(require("../../db/models/blogs"));
 const user_1 = __importDefault(require("../../db/models/user"));
+const comments_1 = __importDefault(require("../../db/models/comments"));
 const likes_1 = __importDefault(require("../../db/models/likes"));
+const tagsService_1 = require("../../Tags/Services/tagsService");
 const sequelize_1 = require("sequelize");
+const tags_1 = __importDefault(require("../../db/models/tags"));
 const ifBlogExists = (id) => __awaiter(void 0, void 0, void 0, function* () {
     const blogExists = yield blogs_1.default.findByPk(id);
     return blogExists;
@@ -27,20 +41,27 @@ const ifUserExists = (id) => __awaiter(void 0, void 0, void 0, function* () {
 });
 const getAllBlogs = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     // get all blogs for all user
+    // console.log("blogs associations", Blogs.associations)
     try {
-        const { userId, blogId, items, page, sort } = req.query;
-        const filter = userId
-            ? blogId
-                ? { userId, id: blogId }
-                : { userId }
-            : blogId
-                ? { id: blogId }
-                : {};
+        const { userId, blogId, items, page, sort, tags } = req.query;
+        let filter = {};
+        if (userId) {
+            filter.userId = userId;
+        }
+        if (blogId) {
+            filter.id = blogId;
+        }
+        console.log(typeof tags);
+        let tagsFilter = tags ? (tags) : null;
+        console.log("tagsFilter", tagsFilter);
+        // if(tagsFilter)
+        // [
+        //   filter = {'$blogTags.tag$':{[Op.in]:tagsFilter}}
+        // ]
         const sortBy = "createdAt";
         const sortOrder = sort ? sort : "DESC";
         const offset = page && items ? (+page - 1) * +items : 0;
         const allBlogsData = yield blogs_1.default.findAll({
-            where: filter,
             include: [
                 {
                     model: user_1.default,
@@ -48,7 +69,32 @@ const getAllBlogs = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
                     attributes: ["id", "email"],
                     through: { attributes: [] },
                 },
+                {
+                    model: comments_1.default,
+                    as: "CommentsOnBLog",
+                    required: false,
+                    where: {
+                        parentId: null // select those whose parent is NULL 
+                    },
+                    include: [
+                        {
+                            model: comments_1.default,
+                            as: 'replies',
+                            attributes: ['id', 'userId', 'comment']
+                        }
+                    ],
+                    attributes: ["id", "userId", "comment"],
+                },
+                {
+                    model: tags_1.default,
+                    as: 'blogTags',
+                    required: tags ? true : false,
+                    where: tags ? { tag: { [sequelize_1.Op.in]: tagsFilter } } : {},
+                    attributes: ["id", "tag"],
+                    through: { attributes: [] }
+                }
             ],
+            where: filter,
             limit: page && items ? +items : 5,
             offset: offset,
             order: [[sortBy, sortOrder]],
@@ -78,12 +124,23 @@ const getAllBlogs = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
 exports.getAllBlogs = getAllBlogs;
 const createBlog = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     var _a;
-    const blogdata = req.body;
+    const _b = req.body, { tags } = _b, blogdata = __rest(_b, ["tags"]);
     blogdata.userId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
     try {
         const createdBlog = yield blogs_1.default.create(blogdata);
-        console.log("blog created with blog id is ", createdBlog.id);
-        return res.status(201).json(createdBlog);
+        if (createdBlog && tags) {
+            try {
+                if (yield (0, tagsService_1.postTagsService)(blogdata.userId, createdBlog.id, tags)) {
+                    res.status(201).json({ message: "Blog created Succesfully" });
+                }
+                else {
+                    throw new Error("Blog not posted");
+                }
+            }
+            catch (error) {
+                console.log(error);
+            }
+        }
     }
     catch (error) {
         console.log("error in creating blog", error);
@@ -162,9 +219,9 @@ const likeBlog = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
 });
 exports.likeBlog = likeBlog;
 const deleteBlog = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _b;
+    var _c;
     const BlogId = req.params.id;
-    const loggedUserId = (_b = req.user) === null || _b === void 0 ? void 0 : _b.id;
+    const loggedUserId = (_c = req.user) === null || _c === void 0 ? void 0 : _c.id;
     try {
         const blogExists = yield blogs_1.default.findByPk(BlogId);
         if (blogExists && blogExists.userId === loggedUserId) {

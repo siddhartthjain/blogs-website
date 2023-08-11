@@ -30,7 +30,10 @@ const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
 const BlogsController_1 = __importDefault(require("./Blogs/Controllers/BlogsController"));
 const AuthController_1 = __importDefault(require("./Auth/Controllers/AuthController"));
+const commentsController_1 = __importDefault(require("./Comments/Controller/commentsController"));
+const tagsController_1 = __importDefault(require("./Tags/Controller/tagsController"));
 const body_parser_1 = __importDefault(require("body-parser"));
+const init_1 = __importDefault(require("./db/init"));
 require("./config/passport");
 const express_session_1 = __importDefault(require("express-session"));
 const swaggerDocument = __importStar(require("./swagger.json"));
@@ -40,7 +43,9 @@ const app = (0, express_1.default)(); // make a app from express
 const PORT = process.env.PORT;
 // route termlogy ("path", callbackfnc);
 app.use(body_parser_1.default.json());
-// dbInit();
+app.use(express_1.default.json());
+app.use(express_1.default.urlencoded({ extended: true }));
+(0, init_1.default)();
 app.set('view engine', "ejs");
 app.get("/", (req, res) => {
     res.send("Express and typescript server");
@@ -50,6 +55,8 @@ app.use((0, express_session_1.default)({
     saveUninitialized: true,
     secret: "SECRET"
 }));
+app.use('/Blogs/:id/comment', commentsController_1.default);
+app.use("/Blogs/:id/Tags", tagsController_1.default);
 app.use('/Blogs', BlogsController_1.default);
 app.use('/Auth', AuthController_1.default);
 app.use("/api-docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerDocument));
