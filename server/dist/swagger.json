@@ -71,13 +71,62 @@
                     "format": "int32"
                 }
             }
+        },
+        "Tags": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "tag": {
+                    "type": "string"
+                }
+            }
+        },
+        "Comments": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "Comment": {
+                    "type": "string"
+                },
+                "userId": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "blogId": {
+                    "type": "integer"
+                },
+                "parentId": {
+                    "type": "integer"
+                }
+            }
+        },
+        "BlogTags": {
+            "type": "object",
+            "properties": {
+                "id": {
+                    "type": "integer",
+                    "format": "int64"
+                },
+                "blogId": {
+                    "type": "integer"
+                },
+                "tagId": {
+                    "type": "integer"
+                }
+            }
         }
     },
     "paths": {
         "/Auth/SignUp": {
             "post": {
                 "summary": "sigin up of user",
-                "description": "Sign up of user Email should be unique",
+                "description": "Sign up of user (Email should be unique)",
                 "parameters": [
                     {
                         "name": "userObject",
@@ -97,7 +146,7 @@
                                 "password": {
                                     "type": "string",
                                     "format": "password",
-                                    "description": "should be strong min 8 Characters and must include uppercasem lowercase and special character",
+                                    "description": "should be strong min 8 Characters and must include uppercase lowercase and special character",
                                     "default": "PassW0rd!"
                                 }
                             }
@@ -276,6 +325,13 @@
                                 },
                                 "description": {
                                     "type": "string"
+                                },
+                                "tags": {
+                                    "type": "array",
+                                    "items": {
+                                        "type": "string"
+                                    },
+                                    "example": ["dev", "backend"]
                                 }
                             }
                         }
@@ -284,6 +340,250 @@
                 "responses": {
                     "201": {
                         "description": "Blog created successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    },
+                    "401": {
+                        "description": "Unauthorised"
+                    }
+                }
+            }
+        },
+        "/Blogs/{id}/comment/{commentId}": {
+            "patch": {
+                "summary": "patch a comment",
+                "security": [
+                    {
+                        "JWTAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id of the  blog",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "commentId",
+                        "in": "path",
+                        "description": "commentId",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "commentData",
+                        "in": "body",
+                        "description": "commentData to be patched",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "comment": {
+                                    "type": "string"
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Comment patched successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    },
+                    "401": {
+                        "description": "Unauthorised"
+                    }
+                }
+            },
+            "delete": {
+                "summary": "Delete a Comment",
+                "security": [
+                    {
+                        "JWTAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id of the  blog",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "commentId",
+                        "in": "path",
+                        "description": "Id of Comment",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Comment deleted successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    },
+                    "401": {
+                        "description": "Unauthorised"
+                    }
+                }
+            }
+        },
+        "/Blogs/{id}/comment/{commentId}/reply": {
+            "post": {
+                "summary": "post a reply",
+                "security": [
+                    {
+                        "JWTAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id of the  blog",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "commentId",
+                        "in": "path",
+                        "description": "commentId",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "replyData",
+                        "in": "body",
+                        "description": "reply comment ",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "properties": {
+                                    "reply": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Comment patched successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    },
+                    "401": {
+                        "description": "Unauthorised"
+                    }
+                }
+            }
+        },
+        "/Blogs/{id}/comment/{commentId}/reply/{replyId}": {
+            "delete": {
+                "summary": "Delete a Reply",
+                "security": [
+                    {
+                        "JWTAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id of the  blog",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "commentId",
+                        "in": "path",
+                        "description": "Id of Comment",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "replyId",
+                        "in": "path",
+                        "description": "Id of Reply",
+                        "required": true,
+                        "type": "integer"
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "reply deleted successfully"
+                    },
+                    "400": {
+                        "description": "Bad request"
+                    },
+                    "500": {
+                        "description": "Server error"
+                    },
+                    "401": {
+                        "description": "Unauthorised"
+                    }
+                }
+            }
+        },
+        "/Blogs/{id}/comment": {
+            "post": {
+                "summary": "post a comment",
+                "security": [
+                    {
+                        "JWTAuth": []
+                    }
+                ],
+                "parameters": [
+                    {
+                        "name": "id",
+                        "in": "path",
+                        "description": "Id of the  blog",
+                        "required": true,
+                        "type": "integer"
+                    },
+                    {
+                        "name": "commentData",
+                        "in": "body",
+                        "description": "commentData to be posted",
+                        "required": true,
+                        "schema": {
+                            "type": "object",
+                            "properties": {
+                                "properties": {
+                                    "comment": {
+                                        "type": "string"
+                                    }
+                                }
+                            }
+                        }
+                    }
+                ],
+                "responses": {
+                    "200": {
+                        "description": "Comment posted successfully"
                     },
                     "400": {
                         "description": "Bad request"

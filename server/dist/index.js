@@ -45,6 +45,7 @@ const PORT = process.env.PORT;
 app.use(body_parser_1.default.json());
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
+// console.log("i am dbinit")
 (0, init_1.default)();
 app.set('view engine', "ejs");
 app.get("/", (req, res) => {

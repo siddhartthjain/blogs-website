@@ -17,10 +17,6 @@ const dbInit = () => {
     // Comments.sync({force:true} ),
     // Tags.sync(isDev!=='test'?{ alter:true}:{force:true} ),
     // BlogTags.sync(isDev!=='test'?{ alter:true}:{force:true}),
-
-
-
-
   ]);
 
   Blogs.belongsTo(User, { as: "users", foreignKey: "userId" });

@@ -23,6 +23,6 @@ const sequelizeConnection = new Sequelize(dbName,dbUsername, dbPassword,{
 
 })
 
-sequelizeConnection.authenticate().then(()=>{console.log("db connected Succesfully")}).catch((err)=>{console.log("not able to connect ",err)});
+sequelizeConnection.authenticate().then(()=>{console.log("database connected Succesfully")}).catch((err)=>{console.log("not able to connect ",err)});
 export default sequelizeConnection;
   

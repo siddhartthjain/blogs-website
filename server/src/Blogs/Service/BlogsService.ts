@@ -91,13 +91,9 @@ export const getAllBlogs = async (req: Request, res: Response) => {
     // {
 
     //   const {id:loggedUserId}= req.user;
-    //
-    //   const updatedBlogs =Object.values(allBlogsData).forEach((blog:Record<string,any>) => {
-    //     const idExists: Boolean = blog.likedUsers.some((user:Record<string,any>) => user.id === loggedUserId);
-    //     Object.assign(blog, {liked:idExists})
-    //     return blog;
-    //   });
-    //
+    //   const allBlogsjson = allBlogsData.map((blog: { toJSON: () => any; })=>blog.toJSON());
+    //   const updatedBlogsData= allBlogsjson.map()
+    
     //   res.json({updatedBlogs});
 
     // }
@@ -121,7 +117,7 @@ export const createBlog = async (req: Request, res: Response) => {
       try {
         if(await postTagsService(blogdata.userId, createdBlog.id,tags))
         {
-          res.status(201).json({message: "Blog created Succesfully"});
+          res.status(201).json(createdBlog);
         }
         else{
           throw new Error ("Blog not posted")

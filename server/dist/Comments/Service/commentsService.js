@@ -32,12 +32,12 @@ const postComment = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
     const { id: blogId } = req.params;
     const { comment } = req.body;
     try {
-        yield comments_1.default.create({
+        const createdComment = yield comments_1.default.create({
             userId: loggedUserId,
             blogId: +blogId,
             comment: comment,
         });
-        res.status(200).json({ message: "Commented succesfully" });
+        res.status(200).json(createdComment);
     }
     catch (error) {
         res.status(500).json({ error: "Not able to Comment on Blog" });
@@ -100,13 +100,13 @@ const postReply = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
     const loggedUserId = (_d = req.user) === null || _d === void 0 ? void 0 : _d.id;
     try {
         if ((yield ifBlogExists(+blogId)) && (yield ifCommentExists(+commentId))) {
-            yield comments_1.default.create({
+            const createdReply = yield comments_1.default.create({
                 userId: loggedUserId,
                 blogId: +blogId,
                 comment: reply,
                 parentId: +commentId,
             });
-            res.status(200).json({ message: "reply posted succesfully" });
+            res.status(201).json(createdReply);
         }
         else {
             res.status(400).json({ error: "Not allowed to reply" });

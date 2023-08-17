@@ -22,6 +22,6 @@ const sequelizeConnection = new sequelize_1.Sequelize(dbName, dbUsername, dbPass
     host: dbHost,
     dialect: dbDriver,
 });
-sequelizeConnection.authenticate().then(() => { console.log("db connected Succesfully"); }).catch((err) => { console.log("not able to connect ", err); });
+sequelizeConnection.authenticate().then(() => { console.log("database connected Succesfully"); }).catch((err) => { console.log("not able to connect ", err); });
 exports.default = sequelizeConnection;
 //# sourceMappingURL=config.js.map

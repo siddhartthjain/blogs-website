@@ -103,13 +103,8 @@ const getAllBlogs = (req, res) => __awaiter(void 0, void 0, void 0, function* ()
         // if(req.user)
         // {
         //   const {id:loggedUserId}= req.user;
-        //
-        //   const updatedBlogs =Object.values(allBlogsData).forEach((blog:Record<string,any>) => {
-        //     const idExists: Boolean = blog.likedUsers.some((user:Record<string,any>) => user.id === loggedUserId);
-        //     Object.assign(blog, {liked:idExists})
-        //     return blog;
-        //   });
-        //
+        //   const allBlogsjson = allBlogsData.map((blog: { toJSON: () => any; })=>blog.toJSON());
+        //   const updatedBlogsData= allBlogsjson.map()
         //   res.json({updatedBlogs});
         // }
         // else{
@@ -131,7 +126,7 @@ const createBlog = (req, res) => __awaiter(void 0, void 0, void 0, function* () 
         if (createdBlog && tags) {
             try {
                 if (yield (0, tagsService_1.postTagsService)(blogdata.userId, createdBlog.id, tags)) {
-                    res.status(201).json({ message: "Blog created Succesfully" });
+                    res.status(201).json(createdBlog);
                 }
                 else {
                     throw new Error("Blog not posted");
