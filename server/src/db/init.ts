@@ -14,7 +14,7 @@ const dbInit = () => {
     // User.sync(isDev!=='test'?{ alter:true}:{force:true} ),
     // Blogs.sync( isDev!=='test'?{ alter:true}:{force:true} ),
     // Likes.sync(isDev!=='test'?{ alter:true}:{force:true} ),
-    // Comments.sync({force:true} ),
+    // Comments.sync(isDev!=='test'?{ alter:true}:{force:true}  ),
     // Tags.sync(isDev!=='test'?{ alter:true}:{force:true} ),
     // BlogTags.sync(isDev!=='test'?{ alter:true}:{force:true}),
   ]);

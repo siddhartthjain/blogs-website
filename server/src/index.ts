@@ -1,8 +1,8 @@
 import express, {Request, Response} from 'express'
 import dotenv from 'dotenv'
-import BlogsController from './Blogs/Controllers/BlogsController';
-import AuthController from './Auth/Controllers/AuthController';
-import commentController from './Comments/Controller/commentsController'
+import BlogsController from './Blogs/Routes/BlogsRoutes';
+import AuthController from './Auth/Routes/AuthRoutes';
+import commentController from './Comments/Routes/commentsRoutes'
 import TagsController from "./Tags/Controller/tagsController"
 import bodyParser from 'body-parser';
 import dbInit from './db/init';
@@ -21,7 +21,7 @@ const PORT = process.env.PORT
 app.use(bodyParser.json());
 app.use(express.json());
 app.use(express.urlencoded({ extended: true }));
-// console.log("i am dbinit")
+console.log("i am dbinit")
 dbInit();
 
 

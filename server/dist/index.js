@@ -28,9 +28,9 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
 Object.defineProperty(exports, "__esModule", { value: true });
 const express_1 = __importDefault(require("express"));
 const dotenv_1 = __importDefault(require("dotenv"));
-const BlogsController_1 = __importDefault(require("./Blogs/Controllers/BlogsController"));
-const AuthController_1 = __importDefault(require("./Auth/Controllers/AuthController"));
-const commentsController_1 = __importDefault(require("./Comments/Controller/commentsController"));
+const BlogsRoutes_1 = __importDefault(require("./Blogs/Routes/BlogsRoutes"));
+const AuthRoutes_1 = __importDefault(require("./Auth/Routes/AuthRoutes"));
+const commentsRoutes_1 = __importDefault(require("./Comments/Routes/commentsRoutes"));
 const tagsController_1 = __importDefault(require("./Tags/Controller/tagsController"));
 const body_parser_1 = __importDefault(require("body-parser"));
 const init_1 = __importDefault(require("./db/init"));
@@ -45,7 +45,7 @@ const PORT = process.env.PORT;
 app.use(body_parser_1.default.json());
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
-// console.log("i am dbinit")
+console.log("i am dbinit");
 (0, init_1.default)();
 app.set('view engine', "ejs");
 app.get("/", (req, res) => {
@@ -56,10 +56,10 @@ app.use((0, express_session_1.default)({
     saveUninitialized: true,
     secret: "SECRET"
 }));
-app.use('/Blogs/:id/comment', commentsController_1.default);
+app.use('/Blogs/:id/comment', commentsRoutes_1.default);
 app.use("/Blogs/:id/Tags", tagsController_1.default);
-app.use('/Blogs', BlogsController_1.default);
-app.use('/Auth', AuthController_1.default);
+app.use('/Blogs', BlogsRoutes_1.default);
+app.use('/Auth', AuthRoutes_1.default);
 app.use("/api-docs", swagger_ui_express_1.default.serve, swagger_ui_express_1.default.setup(swaggerDocument));
 app.listen(PORT, () => {
     console.log(`server is running on ${PORT}`);

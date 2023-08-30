@@ -478,11 +478,11 @@
             "schema": {
               "type": "object",
               "properties": {
-                "properties": {
+                
                   "reply": {
                     "type": "string"
                   }
-                }
+                
               }
             }
           }
@@ -574,11 +574,10 @@
             "schema": {
               "type": "object",
               "properties": {
-                "properties": {
                   "comment": {
                     "type": "string"
                   }
-                }
+                
               }
             }
           }
