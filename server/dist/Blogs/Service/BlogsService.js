@@ -54,7 +54,7 @@ class BlogsService {
                         },
                         {
                             model: comments_1.default,
-                            as: "CommentsOnBLog",
+                            as: "CommentsOnBlog",
                             required: false,
                             where: {
                                 parentId: null, // select those whose parent is NULL
@@ -95,6 +95,7 @@ class BlogsService {
                 // }
             }
             catch (error) {
+                console.log(error);
                 throw new Error("Not able to get Blogs");
             }
         });

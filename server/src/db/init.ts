@@ -19,10 +19,11 @@ const dbInit = () => {
     // BlogTags.sync(isDev!=='test'?{ alter:true}:{force:true}),
   ]);
 
+ 
   Blogs.belongsTo(User, { as: "users", foreignKey: "userId" });
   User.hasMany(Blogs, { foreignKey: "userId" });
   Blogs.hasMany(Comments,{
-    as:"CommentsOnBLog",
+    as:"CommentsOnBlog",
     foreignKey:'blogId'
   })
 };

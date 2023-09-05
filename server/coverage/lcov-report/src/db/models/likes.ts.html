@@ -119,16 +119,7 @@
 <a name='L54'></a><a href='#L54'>54</a>
 <a name='L55'></a><a href='#L55'>55</a>
 <a name='L56'></a><a href='#L56'>56</a>
-<a name='L57'></a><a href='#L57'>57</a>
-<a name='L58'></a><a href='#L58'>58</a>
-<a name='L59'></a><a href='#L59'>59</a>
-<a name='L60'></a><a href='#L60'>60</a>
-<a name='L61'></a><a href='#L61'>61</a>
-<a name='L62'></a><a href='#L62'>62</a>
-<a name='L63'></a><a href='#L63'>63</a>
-<a name='L64'></a><a href='#L64'>64</a>
-<a name='L65'></a><a href='#L65'>65</a>
-<a name='L66'></a><a href='#L66'>66</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
+<a name='L57'></a><a href='#L57'>57</a></td><td class="line-coverage quiet"><span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
@@ -143,17 +134,7 @@
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-yes">1x</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
@@ -193,79 +174,71 @@
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-yes">1x</span>
 <span class="cline-any cline-neutral">&nbsp;</span>
-<span class="cline-any cline-yes">1x</span></td><td class="text"><pre class="prettyprint lang-js">import { Model, DataTypes } from 'sequelize';
-import sequelizeConnection from '../config';
-import User from './user';
-import Blogs from './blogs';
+<span class="cline-any cline-yes">1x</span>
+<span class="cline-any cline-neutral">&nbsp;</span></td><td class="text"><pre class="prettyprint lang-js">import { Model, DataTypes } from "sequelize";
+import sequelizeConnection from "../config";
+import User from "./user";
+import Blogs from "./blogs";
 &nbsp;
+interface likesAttributes {
+  userId: number;
+  blogId: number;
+}
 &nbsp;
-interface likesAttributes
-{
-    
-    userId: number;
-    blogId: number;
-} 
-&nbsp;
-class Likes extends Model&lt;likesAttributes&gt;implements likesAttributes
-{
-    
+class Likes extends Model&lt;likesAttributes&gt; implements likesAttributes {
   userId!: number;
   blogId!: number;
 }
 &nbsp;
-Likes.init({
-    userId:
-    {
-        type:DataTypes.INTEGER,
-        allowNull:false,
-        references:
-        {
-            model:User,
-            key:'id'
-        }
-   
+Likes.init(
+  {
+    userId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: User,
+        key: "id",
+      },
     },
-    blogId:
-    {
-        type:DataTypes.INTEGER,
-        allowNull:false,
-        references:
-        {
-            model:Blogs,
-            key:'id'
-        }
-       
-    }
-&nbsp;
-},
-{
-    sequelize:sequelizeConnection,
-    modelName: 'Likes'
-});
+    blogId: {
+      type: DataTypes.INTEGER,
+      allowNull: false,
+      references: {
+        model: Blogs,
+        key: "id",
+      },
+    },
+  },
+  {
+    sequelize: sequelizeConnection,
+    modelName: "Likes",
+  }
+);
 &nbsp;
 Blogs.belongsToMany(User, {
-    as:'likedUsers',   // this is important and will tell which user has liked a particluar blog 
-    through: Likes,       // Junction table name (Likes model)
-    foreignKey: 'blogId', // The foreign key in the junction table referencing the Blogs model
-    otherKey: 'userId',   // The foreign key in the junction table referencing the Users model
-  });
-  User.belongsToMany(Blogs, {
-    as:'likedBlogs',    // which blog is liked by particluar user
-    through: Likes,       
-    foreignKey: 'userId', 
-    otherKey: 'blogId',   
-  });
- Likes.belongsTo(Blogs, {foreignKey:"blogId"});
- Likes.belongsTo(User, {foreignKey:"userId"});
-  
-export default Likes;</pre></td></tr></table></pre>
+  as: "likedUsers", // this is important and will tell which user has liked a particluar blog
+  through: Likes, // Junction table name (Likes model)
+  foreignKey: "blogId", // The foreign key in the junction table referencing the Blogs model
+  otherKey: "userId", // The foreign key in the junction table referencing the Users model
+});
+User.belongsToMany(Blogs, {
+  as: "likedBlogs", // which blog is liked by particluar user
+  through: Likes,
+  foreignKey: "userId",
+  otherKey: "blogId",
+});
+Likes.belongsTo(Blogs, { foreignKey: "blogId" });
+Likes.belongsTo(User, { foreignKey: "userId" });
+&nbsp;
+export default Likes;
+&nbsp;</pre></td></tr></table></pre>
 
                 <div class='push'></div><!-- for sticky footer -->
             </div><!-- /wrapper -->
             <div class='footer quiet pad2 space-top1 center small'>
                 Code coverage generated by
                 <a href="https://istanbul.js.org/" target="_blank" rel="noopener noreferrer">istanbul</a>
-                at 2023-08-01T08:47:50.954Z
+                at 2023-09-05T08:07:25.362Z
             </div>
         <script src="../../../prettify.js"></script>
         <script>

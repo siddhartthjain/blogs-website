@@ -46,7 +46,7 @@ export default class BlogsService implements BlogContract
                 },
                 {
                   model: Comments,
-                  as: "CommentsOnBLog",
+                  as: "CommentsOnBlog",
                   required: false, // left join because i want all blogs
                   where: {
                     parentId: null, // select those whose parent is NULL
@@ -89,6 +89,7 @@ export default class BlogsService implements BlogContract
             //   res.json({ allBlogsData });
             // }
           } catch (error) {
+            console.log(error)
             throw new Error("Not able to get Blogs")
           }
         
