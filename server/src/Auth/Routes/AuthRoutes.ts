@@ -11,7 +11,12 @@ router.post('/Login', validationMiddleware(LoginDto),authController.login);
 router.post('/SignUp', validationMiddleware(SignupDto),authController.signUp);
 router.get('/google', passport.authenticate('google',{scope:["email", "profile"],}))
 router.get("/google/redirect", passport.authenticate("google"), (req, res) => {
-    res.redirect('/blogs')
+    
+  if(req.user)
+  {
+     res.json({message:"Ypu have succesfully logged in", token:req.user})
+  }
+
   });
 
 

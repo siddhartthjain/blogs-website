@@ -10,6 +10,7 @@ export const authMiddleware = (req:Request, res: Response, next: NextFunction)=>
     try {
         const secretKey= process.env.SECRET_KEY as string;
         const token = req.header('Authorization')?.replace('Bearer ',"");
+        console.log("token is", token );
         if(!token)
         {
             throw new Error();

@@ -6,6 +6,7 @@ const GoogleStrategy = passportGoogle.Strategy;
 
 
 passport.serializeUser(function(user, done) {
+
   done(null, user);
 });
 

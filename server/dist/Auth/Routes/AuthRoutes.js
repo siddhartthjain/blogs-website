@@ -14,7 +14,9 @@ router.post('/Login', (0, validate_1.validationMiddleware)(Dto_1.LoginDto), auth
 router.post('/SignUp', (0, validate_1.validationMiddleware)(Dto_1.SignupDto), authController.signUp);
 router.get('/google', passport_1.default.authenticate('google', { scope: ["email", "profile"], }));
 router.get("/google/redirect", passport_1.default.authenticate("google"), (req, res) => {
-    res.redirect('/blogs');
+    if (req.user) {
+        res.json({ message: "Ypu have succesfully logged in", token: req.user });
+    }
 });
 module.exports = router;
 //# sourceMappingURL=AuthRoutes.js.map

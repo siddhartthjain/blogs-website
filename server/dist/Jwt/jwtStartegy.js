@@ -12,6 +12,7 @@ const authMiddleware = (req, res, next) => {
     try {
         const secretKey = process.env.SECRET_KEY;
         const token = (_a = req.header('Authorization')) === null || _a === void 0 ? void 0 : _a.replace('Bearer ', "");
+        console.log("token is", token);
         if (!token) {
             throw new Error();
         }
