@@ -19,11 +19,19 @@ import LikeContract from "../Repositories/LikeRepositories";
       }
 
       getAllBlogs = async (req: Request, res: Response) => {
+
+        
         // get all blogs for all user
         // console.log("blogs associations", Blogs.associations)
-        console.log("im here")
+       
           const { userId, blogId, items, page, sort, tags } = req.query;
+          
           const inputs = req.query;
+          console.log("inputs are",inputs);
+          if(req.params.id)
+          {
+            inputs.blogId= req.params.id;
+          }
           inputs.user = req.user?.id
           try {
             res.json(await this.blogService.getAllBlog(inputs));

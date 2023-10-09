@@ -15,8 +15,9 @@ export default class BlogsService implements BlogContract
 
     getAllBlog =async (inputs:Record<string,any>) => {
         try {
-            const { userId, blogId, items, page, sort, tags } = inputs;
-        
+            const { userId, blogId, items,  sort, tags } = inputs;
+            let {page} = inputs
+            page = Math.max(page,1);
             let filter: any = {};
             if (userId) {
               filter.userId = userId;
@@ -24,9 +25,9 @@ export default class BlogsService implements BlogContract
             if (blogId) {
               filter.id = blogId;
             }
-            console.log(typeof tags);
+            
             let tagsFilter = tags ? tags : null;
-            console.log("tagsFilter", tagsFilter);
+           
             // if(tagsFilter)
             // [
             //   filter = {'$blogTags.tag$':{[Op.in]:tagsFilter}}
@@ -36,6 +37,10 @@ export default class BlogsService implements BlogContract
             const sortOrder = sort ? sort : ("DESC" as any);
         
             const offset = page && items ? (+page - 1) * +items : 0;
+
+            console.log("page is ", page);
+            console.log("offset is ", offset);
+
             const allBlogsData: Record<string, any> = await Blogs.findAll({
               include: [
                 {
@@ -43,6 +48,11 @@ export default class BlogsService implements BlogContract
                   as: "likedUsers",
                   attributes: ["id", "email"],
                   through: { attributes: [] },
+                },
+                {
+                  model:User,
+                  as:"user",
+                  attributes:["name"]
                 },
                 {
                   model: Comments,
@@ -70,10 +80,11 @@ export default class BlogsService implements BlogContract
                 },
               ],
               where: filter,
-              limit: page && items ? +items : 5,
+              limit: page && items ? +items :5,
               offset: offset,
               order: [[sortBy, sortOrder]],
             });
+          
             return allBlogsData;
             // if(req.user)
             // {

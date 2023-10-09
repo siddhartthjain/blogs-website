@@ -25,6 +25,7 @@ class CommentsService {
         });
         this.createComment = (inputs) => __awaiter(this, void 0, void 0, function* () {
             const { blogId, loggedUserId, comment } = inputs;
+            console.log("inputs are,", inputs);
             try {
                 const createdComment = yield comments_1.default.create({
                     userId: loggedUserId,

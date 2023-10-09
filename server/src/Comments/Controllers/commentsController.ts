@@ -17,6 +17,7 @@ export default class CommentController
     const loggedUserId = req.user?.id;
     const { id: blogId } = req.params;
     const { comment } = req.body;
+    console.log("req is", req.body);
     const inputs={
       loggedUserId,
       blogId,
@@ -31,6 +32,7 @@ export default class CommentController
       res.status(404).send("Blog doesnt exists");
       return
     } catch (error) {
+      console.log(error)
       res.status(500).send("Not able to post Comment")
     }
   };

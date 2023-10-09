@@ -19,7 +19,7 @@ const validationMiddleware = (validationSchema) => (req, res, next) => __awaiter
             errorTexts = errorTexts.concat(errorItem.constraints);
         }
         console.log(errorTexts);
-        res.status(400).send(errorTexts);
+        return res.status(400).send(errorTexts);
     }
     else {
         next();

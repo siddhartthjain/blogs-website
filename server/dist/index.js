@@ -36,20 +36,30 @@ const body_parser_1 = __importDefault(require("body-parser"));
 const init_1 = __importDefault(require("./db/init"));
 require("./config/passport");
 const express_session_1 = __importDefault(require("express-session"));
+const path = require('path');
 const swaggerDocument = __importStar(require("./swagger.json"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
+const cors = require('cors');
+const cookie_parser_1 = __importDefault(require("cookie-parser"));
 dotenv_1.default.config(); // read env file
 const app = (0, express_1.default)(); // make a app from express
 const PORT = process.env.PORT;
+app.use(cors({
+    origin: '*'
+}));
 // route termlogy ("path", callbackfnc);
 app.use(body_parser_1.default.json());
 app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
+app.use((0, cookie_parser_1.default)());
 (0, init_1.default)();
 app.set('view engine', "ejs");
 app.get("/", (req, res) => {
     res.send("Express and typescript server");
 });
+// const file  = fs.readFileSync('./swagger.yaml', 'utf8')
+// const swaggerDocument = YAML.load(path.join(__dirname,'./swagger.yaml'))  // here i converted yaml to json 
+// we are using session only because of Oauth requires session to enter key in req
 app.use((0, express_session_1.default)({
     resave: false,
     saveUninitialized: true,

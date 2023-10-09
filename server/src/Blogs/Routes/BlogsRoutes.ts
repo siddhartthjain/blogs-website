@@ -10,6 +10,7 @@ const router = express.Router();
 router.get('/allBlogs',blogController.getAllBlogs );
 router.use(authMiddleware)
 router.get('/', blogController.getAllBlogs);
+router.get('/:id', blogController.getAllBlogs);
 router.post('/',validationMiddleware(CreateBlogDto), blogController.createBlog);
 router.patch('/:id',validationMiddleware(UpdateBlogDto), blogController.updateBlog);
 router.post('/like/:blogId',validationMiddleware(LikeBlogDto),blogController.likeBlog);

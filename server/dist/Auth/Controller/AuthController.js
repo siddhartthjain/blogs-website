@@ -30,7 +30,7 @@ class AuthController {
                     res.status(400).json({ message: "User already exists" });
                 }
                 else {
-                    res.json(yield this.authService.createUser(userBody));
+                    res.json({ message: yield this.authService.createUser(userBody) });
                 }
             }
             catch (error) {
@@ -49,7 +49,8 @@ class AuthController {
                         const secretKey = process.env.SECRET_KEY;
                         const payload = { id: userExists.id, email: userExists.email };
                         const token = jsonwebtoken_1.default.sign(payload, secretKey, { expiresIn: "6d" });
-                        res.json({ message: "succesfully logged in", token });
+                        const response = { userId: userExists.id, token: token };
+                        res.json({ message: "succesfully logged in", response });
                     }
                     else {
                         throw new Error("password is wrong");

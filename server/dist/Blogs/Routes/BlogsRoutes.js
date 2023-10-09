@@ -13,6 +13,7 @@ const router = express_1.default.Router();
 router.get('/allBlogs', blogController.getAllBlogs);
 router.use(jwtStartegy_1.authMiddleware);
 router.get('/', blogController.getAllBlogs);
+router.get('/:id', blogController.getAllBlogs);
 router.post('/', (0, validate_1.validationMiddleware)(Dto_1.CreateBlogDto), blogController.createBlog);
 router.patch('/:id', (0, validate_1.validationMiddleware)(Dto_1.UpdateBlogDto), blogController.updateBlog);
 router.post('/like/:blogId', (0, validate_1.validationMiddleware)(Dto_1.LikeBlogDto), blogController.likeBlog);

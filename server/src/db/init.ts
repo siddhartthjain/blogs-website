@@ -20,7 +20,7 @@ const dbInit = () => {
   ]);
 
  
-  Blogs.belongsTo(User, { as: "users", foreignKey: "userId" });
+  Blogs.belongsTo(User, { as: "user", foreignKey: "userId" });
   User.hasMany(Blogs, { foreignKey: "userId" });
   Blogs.hasMany(Comments,{
     as:"CommentsOnBlog",

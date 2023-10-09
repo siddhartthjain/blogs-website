@@ -14,6 +14,7 @@ export default class CommentsService implements CommentsContract{
 
   createComment = async (inputs: Record<string, any>) => {
     const { blogId, loggedUserId, comment } = inputs;
+    console.log("inputs are,", inputs);
     try {
       const createdComment = await Comments.create({
         userId: loggedUserId,

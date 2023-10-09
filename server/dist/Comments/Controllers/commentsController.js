@@ -21,6 +21,7 @@ class CommentController {
             const loggedUserId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
             const { id: blogId } = req.params;
             const { comment } = req.body;
+            console.log("req is", req.body);
             const inputs = {
                 loggedUserId,
                 blogId,
@@ -35,6 +36,7 @@ class CommentController {
                 return;
             }
             catch (error) {
+                console.log(error);
                 res.status(500).send("Not able to post Comment");
             }
         });

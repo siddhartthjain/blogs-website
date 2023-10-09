@@ -21,14 +21,15 @@ export default class AuthController {
     userBody.password = hashedPassword;
     try {
       const userExists = await this.authService.findOneEmail(userBody.email);
+     
       if (userExists) {
         res.status(400).json({ message: "User already exists" });
       } else {
-        res.json(await this.authService.createUser(userBody));
+        res.json({message :await this.authService.createUser(userBody)});
       }
     } catch (error) {
       console.log(error);
-      res.json({ error: "error in creating user" });
+       res.json({ error: "error in creating user" });
     }
   };
 
@@ -45,7 +46,8 @@ export default class AuthController {
           const secretKey: string = process.env.SECRET_KEY as string;
           const payload = { id: userExists.id, email: userExists.email };
           const token = jwt.sign(payload, secretKey, { expiresIn: "6d" });
-          res.json({ message: "succesfully logged in", token });
+          const response= {userId: userExists.id, token:token};
+          res.json({ message: "succesfully logged in",response });
         } else {
           throw new Error("password is wrong");
         }

@@ -18,7 +18,7 @@ const dbInit = () => {
     // Tags.sync(isDev!=='test'?{ alter:true}:{force:true} ),
     // BlogTags.sync(isDev!=='test'?{ alter:true}:{force:true}),
     ]);
-    blogs_1.default.belongsTo(user_1.default, { as: "users", foreignKey: "userId" });
+    blogs_1.default.belongsTo(user_1.default, { as: "user", foreignKey: "userId" });
     user_1.default.hasMany(blogs_1.default, { foreignKey: "userId" });
     blogs_1.default.hasMany(comments_1.default, {
         as: "CommentsOnBlog",

@@ -30,12 +30,15 @@ const LikesService_1 = __importDefault(require("../Service/LikesService"));
 class BlogController {
     constructor() {
         this.getAllBlogs = (req, res) => __awaiter(this, void 0, void 0, function* () {
-            var _a;
             // get all blogs for all user
             // console.log("blogs associations", Blogs.associations)
-            console.log("im here");
+            var _a;
             const { userId, blogId, items, page, sort, tags } = req.query;
             const inputs = req.query;
+            console.log("inputs are", inputs);
+            if (req.params.id) {
+                inputs.blogId = req.params.id;
+            }
             inputs.user = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
             try {
                 res.json(yield this.blogService.getAllBlog(inputs));

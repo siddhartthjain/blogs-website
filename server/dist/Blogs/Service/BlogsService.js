@@ -26,7 +26,9 @@ class BlogsService {
         });
         this.getAllBlog = (inputs) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const { userId, blogId, items, page, sort, tags } = inputs;
+                const { userId, blogId, items, sort, tags } = inputs;
+                let { page } = inputs;
+                page = Math.max(page, 1);
                 let filter = {};
                 if (userId) {
                     filter.userId = userId;
@@ -34,9 +36,7 @@ class BlogsService {
                 if (blogId) {
                     filter.id = blogId;
                 }
-                console.log(typeof tags);
                 let tagsFilter = tags ? tags : null;
-                console.log("tagsFilter", tagsFilter);
                 // if(tagsFilter)
                 // [
                 //   filter = {'$blogTags.tag$':{[Op.in]:tagsFilter}}
@@ -44,6 +44,8 @@ class BlogsService {
                 const sortBy = "createdAt";
                 const sortOrder = sort ? sort : "DESC";
                 const offset = page && items ? (+page - 1) * +items : 0;
+                console.log("page is ", page);
+                console.log("offset is ", offset);
                 const allBlogsData = yield blogs_1.default.findAll({
                     include: [
                         {
@@ -51,6 +53,11 @@ class BlogsService {
                             as: "likedUsers",
                             attributes: ["id", "email"],
                             through: { attributes: [] },
+                        },
+                        {
+                            model: user_1.default,
+                            as: "user",
+                            attributes: ["name"]
                         },
                         {
                             model: comments_1.default,
