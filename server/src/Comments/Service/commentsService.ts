@@ -1,124 +1,110 @@
-import { Request, Response } from "express";
-import Blogs from "../../db/models/blogs";
-import User from "../../db/models/user";
+import { threadId } from "worker_threads";
+import BlogsService from "../../Blogs/Service/BlogsService";
 import Comments from "../../db/models/comments";
-import Likes from "../../db/models/likes";
-import { Op } from "sequelize";
+import {CommentsContract} from "../Repositories/CommentsRepositories"
 
-const ifCommentExists = async (id: number) => {
-  const CommentExists = await Comments.findByPk(id);
-  if (CommentExists?.parentId != null) {
-    return null;
-  }
-  return CommentExists;
-};
-
-const ifBlogExists = async (id: number) => {
-  const blogExists = await Blogs.findByPk(id);
-  return blogExists;
-};
-
-export const postComment = async (req: Request, res: Response) => {
-  const loggedUserId = req.user?.id;
-  const { id: blogId } = req.params;
-  const { comment } = req.body;
-  try {
-    const createdComment = await Comments.create({
-      userId: loggedUserId,
-      blogId: +blogId,
-      comment: comment,
-    });
-    res.status(200).json(createdComment);
-  } catch (error) {
-    res.status(500).json({ error: "Not able to Comment on Blog" });
-  }
-};
-
-export const editComment = async (req: Request, res: Response) => {
-  const { commentId } = req.params;
-  const { comment: newComment } = req.body;
-  const loggedUserId = req.user?.id;
-  try {
-    const comment = await Comments.findByPk(commentId);
-    if (comment && loggedUserId === comment.userId) {
-      comment.update({ comment: newComment });
-      res.status(200).json({ message: "Comment Edited Succesfully" });
-      return;
-    } else {
-      res.status(400).json({ error: "Comment cant be edited" });
-      return;
+export default class CommentsService implements CommentsContract{
+  ifCommentExists = async (id: number) => {
+    const CommentExists = await Comments.findByPk(id);
+    if (CommentExists?.parentId != null) {
+      return null;
     }
-  } catch (error) {
-    res.status(500).json({ error: "not able to delet comment" });
-  }
-};
+    return CommentExists;
+  };
 
-export const deleteComment = async (req: Request, res: Response) => {
-  const { commentId } = req.params;
-  const loggedUserId = req.user?.id;
-  const comment = await Comments.findByPk(commentId);
-  try {
-    if (comment && comment.userId === loggedUserId) {
-      const row = await comment.destroy();
-      if (+row >= 0) {
-        res.status(200).json({ message: "Comment deleted succesfully" });
-        return;
-      } else {
-        res.status(400).json({ error: "Not able to delete the comment" });
-      }
-    } else {
-      res.status(400).json({ error: "You are not allowed to delete Comment" });
-      return;
-    }
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Not able to delete Comment" });
-  }
-};
-
-export const postReply = async (req: Request, res: Response) => {
-  const { id: blogId, commentId } = req.params;
-  const { reply } = req.body;
-  const loggedUserId = req.user?.id;
-
-  try {
-    if ((await ifBlogExists(+blogId)) && (await ifCommentExists(+commentId))) {
-      const createdReply = await Comments.create({
+  createComment = async (inputs: Record<string, any>) => {
+    const { blogId, loggedUserId, comment } = inputs;
+    console.log("inputs are,", inputs);
+    try {
+      const createdComment = await Comments.create({
         userId: loggedUserId,
         blogId: +blogId,
-        comment: reply,
-        parentId: +commentId,
+        comment: comment,
       });
-      res.status(201).json(createdReply);
-    } else {
-      res.status(400).json({ error: "Not allowed to reply" });
-      return;
+      return createdComment;
+    } catch (error) {
+      throw new Error("Not able to post Comment");
     }
-  } catch (error) {
-    console.log(error);
-    res.status(500).json({ error: "Not allowed to reply" });
-  }
-};
+  };
 
-export const deleteReply = async (req: Request, res: Response) => {
-  const { replyId } = req.params;
-  const loggedUserId = req.user?.id;
-  const reply = await Comments.findByPk(replyId);
+  updateComment = async (inputs: Record<string, any>) => {
+    const { commentId, loggedUserId, newComment } = inputs;
+    try {
+      const comment = await Comments.findByPk(commentId);
+      if (comment && loggedUserId === comment.userId) {
+        comment.update({ comment: newComment });
+        return "Comment Edited Succesfully";
+        return;
+      } else {
+        return "You are Not allowed to upadte Comment";
+      }
+    } catch (error) {
+      throw new Error("Not able to edit comment");
+    }
+  };
+  deleteComment = async (inputs: Record<string, any>) => {
+    const { commentId, loggedUserId } = inputs;
+    const comment = await Comments.findByPk(commentId);
+    try {
+      if (comment && comment.userId === loggedUserId) {
+        const row = await comment.destroy();
+        if (+row >= 0) {
+          return "Comment deleted Sucessfully";
+        } else {
+          return "Not able to delete Comment";
+        }
+      } else {
+        return "You are not allowed to delete Comment";
+      }
+    } catch (error) {
+      console.log(error);
+      throw new Error("Not able to delete Comment");
+    }
+  };
+  postReply = async (inputs: Record<string, any>) => {
+    const blogService = new BlogsService();
+    const { commentId, loggedUserId, blogId, reply } = inputs;
+    try {
+      if (
+        (await blogService.ifBlogExists(+blogId)) &&
+        (await this.ifCommentExists(+commentId))
+      ) {
+        const createdReply = await Comments.create({
+          userId: loggedUserId,
+          blogId: +blogId,
+          comment: reply,
+          parentId: +commentId,
+        });
+        return createdReply;
+      } else {
+        return "Not allowed to reply";
+      }
+    } catch (error) {
+      console.log(error);
+      throw new Error("not able to post reply");
+    }
+  };
+
+  deleteReply = async (inputs:Record<string,any>) => {
+    const {replyId,loggedUserId} = inputs;
+    const reply = await Comments.findByPk(replyId);
   try {
     if (reply && reply.userId === loggedUserId) {
       const row = await reply.destroy();
       if (+row >= 0) {
-        res.json({ message: "Reply deleted succesfully" });
+        return "reply deleted Succesfully";
         return;
       } else {
-        res.json({ error: "Not able to delete reply" });
+        return "Not able to delete reply" 
       }
     } else {
-      res.status(400).json({ error: "You are not allowed to delete Reply" });
-      return;
+      
+      return "Not able to delete reply" 
     }
   } catch (error) {
     console.log(error);
-    res.status(500).json({ error: "Not able to delete Reply" });
+     throw new Error ("Not able to delete reply" );
   }
-};
+    
+  }
+}

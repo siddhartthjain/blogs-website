@@ -7,9 +7,12 @@ dotenv.config();
 export const authMiddleware = (req:Request, res: Response, next: NextFunction)=>
 {
     
+   
+
     try {
         const secretKey= process.env.SECRET_KEY as string;
         const token = req.header('Authorization')?.replace('Bearer ',"");
+        
         if(!token)
         {
             throw new Error();

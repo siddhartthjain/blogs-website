@@ -11,7 +11,7 @@ services:
     depends_on:
       - db
     volumes:
-    - .:/app
+    - .:/app   # change in . directory should be reflected in /app directory  inside conatiner 
 
   db:
     container_name: postgres
@@ -19,10 +19,15 @@ services:
     ports:
       - '5433:${DB_PORT}'
     volumes:
-      - data:/data/db
+      - data:/data/db  # i am storing this vloume data to /data/db directory as to maintain the data as conatiners are till their running lifetime only
     environment:
       - POSTGRES_PASSWORD=${DB_PASSWORD}
       - POSTGRES_DB=${DB_DATABASE}
 
 volumes: 
- data: {}
+ data: {}    # this is data volume or data that is used bw containers 
+
+
+# when i will use docker-compose down this will delete the volumes includeing the copied files and the plsql data 
+# one way is to use host file sysytem to save the data if done that it will loose the portabolity
+#second way is to create another separet conatiner and run it separately from api and do not down that container

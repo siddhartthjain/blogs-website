@@ -16,7 +16,7 @@
   },
   "include": [
     "src/*.ts",
-    "src/Types/types.d.ts"
+    "src/Types/*.d.ts"
   ], // matches all ts files in directory and subdirectory
   // "exclude": [
   //   "./node_modules",

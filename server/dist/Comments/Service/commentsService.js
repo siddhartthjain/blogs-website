@@ -12,138 +12,118 @@ var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
 Object.defineProperty(exports, "__esModule", { value: true });
-exports.deleteReply = exports.postReply = exports.deleteComment = exports.editComment = exports.postComment = void 0;
-const blogs_1 = __importDefault(require("../../db/models/blogs"));
+const BlogsService_1 = __importDefault(require("../../Blogs/Service/BlogsService"));
 const comments_1 = __importDefault(require("../../db/models/comments"));
-const ifCommentExists = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const CommentExists = yield comments_1.default.findByPk(id);
-    if ((CommentExists === null || CommentExists === void 0 ? void 0 : CommentExists.parentId) != null) {
-        return null;
-    }
-    return CommentExists;
-});
-const ifBlogExists = (id) => __awaiter(void 0, void 0, void 0, function* () {
-    const blogExists = yield blogs_1.default.findByPk(id);
-    return blogExists;
-});
-const postComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _a;
-    const loggedUserId = (_a = req.user) === null || _a === void 0 ? void 0 : _a.id;
-    const { id: blogId } = req.params;
-    const { comment } = req.body;
-    try {
-        const createdComment = yield comments_1.default.create({
-            userId: loggedUserId,
-            blogId: +blogId,
-            comment: comment,
+class CommentsService {
+    constructor() {
+        this.ifCommentExists = (id) => __awaiter(this, void 0, void 0, function* () {
+            const CommentExists = yield comments_1.default.findByPk(id);
+            if ((CommentExists === null || CommentExists === void 0 ? void 0 : CommentExists.parentId) != null) {
+                return null;
+            }
+            return CommentExists;
         });
-        res.status(200).json(createdComment);
-    }
-    catch (error) {
-        res.status(500).json({ error: "Not able to Comment on Blog" });
-    }
-});
-exports.postComment = postComment;
-const editComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _b;
-    const { commentId } = req.params;
-    const { comment: newComment } = req.body;
-    const loggedUserId = (_b = req.user) === null || _b === void 0 ? void 0 : _b.id;
-    try {
-        const comment = yield comments_1.default.findByPk(commentId);
-        if (comment && loggedUserId === comment.userId) {
-            comment.update({ comment: newComment });
-            res.status(200).json({ message: "Comment Edited Succesfully" });
-            return;
-        }
-        else {
-            res.status(400).json({ error: "Comment cant be edited" });
-            return;
-        }
-    }
-    catch (error) {
-        res.status(500).json({ error: "not able to delet comment" });
-    }
-});
-exports.editComment = editComment;
-const deleteComment = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _c;
-    const { commentId } = req.params;
-    const loggedUserId = (_c = req.user) === null || _c === void 0 ? void 0 : _c.id;
-    const comment = yield comments_1.default.findByPk(commentId);
-    try {
-        if (comment && comment.userId === loggedUserId) {
-            const row = yield comment.destroy();
-            if (+row >= 0) {
-                res.status(200).json({ message: "Comment deleted succesfully" });
-                return;
+        this.createComment = (inputs) => __awaiter(this, void 0, void 0, function* () {
+            const { blogId, loggedUserId, comment } = inputs;
+            console.log("inputs are,", inputs);
+            try {
+                const createdComment = yield comments_1.default.create({
+                    userId: loggedUserId,
+                    blogId: +blogId,
+                    comment: comment,
+                });
+                return createdComment;
             }
-            else {
-                res.status(400).json({ error: "Not able to delete the comment" });
+            catch (error) {
+                throw new Error("Not able to post Comment");
             }
-        }
-        else {
-            res.status(400).json({ error: "You are not allowed to delete Comment" });
-            return;
-        }
-    }
-    catch (error) {
-        console.log(error);
-        res.status(500).json({ error: "Not able to delete Comment" });
-    }
-});
-exports.deleteComment = deleteComment;
-const postReply = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _d;
-    const { id: blogId, commentId } = req.params;
-    const { reply } = req.body;
-    const loggedUserId = (_d = req.user) === null || _d === void 0 ? void 0 : _d.id;
-    try {
-        if ((yield ifBlogExists(+blogId)) && (yield ifCommentExists(+commentId))) {
-            const createdReply = yield comments_1.default.create({
-                userId: loggedUserId,
-                blogId: +blogId,
-                comment: reply,
-                parentId: +commentId,
-            });
-            res.status(201).json(createdReply);
-        }
-        else {
-            res.status(400).json({ error: "Not allowed to reply" });
-            return;
-        }
-    }
-    catch (error) {
-        console.log(error);
-        res.status(500).json({ error: "Not allowed to reply" });
-    }
-});
-exports.postReply = postReply;
-const deleteReply = (req, res) => __awaiter(void 0, void 0, void 0, function* () {
-    var _e;
-    const { replyId } = req.params;
-    const loggedUserId = (_e = req.user) === null || _e === void 0 ? void 0 : _e.id;
-    const reply = yield comments_1.default.findByPk(replyId);
-    try {
-        if (reply && reply.userId === loggedUserId) {
-            const row = yield reply.destroy();
-            if (+row >= 0) {
-                res.json({ message: "Reply deleted succesfully" });
-                return;
+        });
+        this.updateComment = (inputs) => __awaiter(this, void 0, void 0, function* () {
+            const { commentId, loggedUserId, newComment } = inputs;
+            try {
+                const comment = yield comments_1.default.findByPk(commentId);
+                if (comment && loggedUserId === comment.userId) {
+                    comment.update({ comment: newComment });
+                    return "Comment Edited Succesfully";
+                    return;
+                }
+                else {
+                    return "You are Not allowed to upadte Comment";
+                }
             }
-            else {
-                res.json({ error: "Not able to delete reply" });
+            catch (error) {
+                throw new Error("Not able to edit comment");
             }
-        }
-        else {
-            res.status(400).json({ error: "You are not allowed to delete Reply" });
-            return;
-        }
+        });
+        this.deleteComment = (inputs) => __awaiter(this, void 0, void 0, function* () {
+            const { commentId, loggedUserId } = inputs;
+            const comment = yield comments_1.default.findByPk(commentId);
+            try {
+                if (comment && comment.userId === loggedUserId) {
+                    const row = yield comment.destroy();
+                    if (+row >= 0) {
+                        return "Comment deleted Sucessfully";
+                    }
+                    else {
+                        return "Not able to delete Comment";
+                    }
+                }
+                else {
+                    return "You are not allowed to delete Comment";
+                }
+            }
+            catch (error) {
+                console.log(error);
+                throw new Error("Not able to delete Comment");
+            }
+        });
+        this.postReply = (inputs) => __awaiter(this, void 0, void 0, function* () {
+            const blogService = new BlogsService_1.default();
+            const { commentId, loggedUserId, blogId, reply } = inputs;
+            try {
+                if ((yield blogService.ifBlogExists(+blogId)) &&
+                    (yield this.ifCommentExists(+commentId))) {
+                    const createdReply = yield comments_1.default.create({
+                        userId: loggedUserId,
+                        blogId: +blogId,
+                        comment: reply,
+                        parentId: +commentId,
+                    });
+                    return createdReply;
+                }
+                else {
+                    return "Not allowed to reply";
+                }
+            }
+            catch (error) {
+                console.log(error);
+                throw new Error("not able to post reply");
+            }
+        });
+        this.deleteReply = (inputs) => __awaiter(this, void 0, void 0, function* () {
+            const { replyId, loggedUserId } = inputs;
+            const reply = yield comments_1.default.findByPk(replyId);
+            try {
+                if (reply && reply.userId === loggedUserId) {
+                    const row = yield reply.destroy();
+                    if (+row >= 0) {
+                        return "reply deleted Succesfully";
+                        return;
+                    }
+                    else {
+                        return "Not able to delete reply";
+                    }
+                }
+                else {
+                    return "Not able to delete reply";
+                }
+            }
+            catch (error) {
+                console.log(error);
+                throw new Error("Not able to delete reply");
+            }
+        });
     }
-    catch (error) {
-        console.log(error);
-        res.status(500).json({ error: "Not able to delete Reply" });
-    }
-});
-exports.deleteReply = deleteReply;
+}
+exports.default = CommentsService;
 //# sourceMappingURL=commentsService.js.map

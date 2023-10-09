@@ -1,4 +1,4 @@
-'use strict';
+"use strict";
 var __importDefault = (this && this.__importDefault) || function (mod) {
     return (mod && mod.__esModule) ? mod : { "default": mod };
 };
@@ -12,11 +12,11 @@ Blogs.init({
     id: {
         type: sequelize_1.DataTypes.INTEGER,
         autoIncrement: true,
-        primaryKey: true
+        primaryKey: true,
     },
     title: {
         type: sequelize_1.DataTypes.STRING,
-        allowNull: false
+        allowNull: false,
     },
     likes: {
         type: sequelize_1.DataTypes.INTEGER,
@@ -25,19 +25,19 @@ Blogs.init({
     },
     description: {
         type: sequelize_1.DataTypes.TEXT,
-        allowNull: false
+        allowNull: false,
     },
     userId: {
         type: sequelize_1.DataTypes.INTEGER,
         allowNull: false,
         references: {
             model: user_1.default,
-            key: 'id'
-        }
-    }
+            key: "id",
+        },
+    },
 }, {
     sequelize: config_1.default,
-    modelName: 'Blogs',
+    modelName: "Blogs",
 });
 exports.default = Blogs;
 //# sourceMappingURL=blogs.js.map

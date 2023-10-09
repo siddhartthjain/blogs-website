@@ -10,7 +10,7 @@ export const validationMiddleware :any =( validationSchema:any) => async (req: R
                     errorTexts = errorTexts.concat(errorItem.constraints);
                 }
                 console.log(errorTexts);
-                res.status(400).send(errorTexts);
+                return res.status(400).send(errorTexts);
       }
       else{ 
         next();

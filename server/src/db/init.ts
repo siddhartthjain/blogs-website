@@ -14,15 +14,16 @@ const dbInit = () => {
     // User.sync(isDev!=='test'?{ alter:true}:{force:true} ),
     // Blogs.sync( isDev!=='test'?{ alter:true}:{force:true} ),
     // Likes.sync(isDev!=='test'?{ alter:true}:{force:true} ),
-    // Comments.sync({force:true} ),
+    // Comments.sync(isDev!=='test'?{ alter:true}:{force:true}  ),
     // Tags.sync(isDev!=='test'?{ alter:true}:{force:true} ),
     // BlogTags.sync(isDev!=='test'?{ alter:true}:{force:true}),
   ]);
 
-  Blogs.belongsTo(User, { as: "users", foreignKey: "userId" });
+ 
+  Blogs.belongsTo(User, { as: "user", foreignKey: "userId" });
   User.hasMany(Blogs, { foreignKey: "userId" });
   Blogs.hasMany(Comments,{
-    as:"CommentsOnBLog",
+    as:"CommentsOnBlog",
     foreignKey:'blogId'
   })
 };

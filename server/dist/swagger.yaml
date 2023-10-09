@@ -1,0 +1,486 @@
+
+openapi: 3.0.3
+info:
+  title: Swagger Documnetation- OpenAPI 3.0
+  description: |-
+    Build Shemas of Database in swagger Yaml file
+  version: 1.0.11
+
+tags:
+  - name: clients
+    description: Everything about client
+  - name: application
+    description: Api about application
+  - name: installed_application
+    description: Apis about installed application
+       
+
+paths:
+  /client:
+    put:
+      tags:
+        - clients
+      summary: Update an existing client
+      description: Update an existing client by Id
+      
+      requestBody:
+        description: Update an existent Client 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/clients'
+          
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/clients'          
+            
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: Client not found
+        '405':
+          description: Validation exception
+      security:
+        - api_key: []
+
+    post:
+      tags:
+        - clients
+      summary: Add a new client 
+      description: Add a new client
+      requestBody:
+        description: Create a new Client
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/clients'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/clients'          
+        '405':
+          description: Invalid input
+      security:
+        - api_key: []  
+
+  /client/{clientId}:
+    get: 
+      tags:
+        - clients
+      summary: Find client by id
+      description: Returns a client
+      parameters:
+        - name: clientId
+          in: path
+          description: ID of client
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/clients'          
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: client not found
+      security:
+        - api_key: []
+
+    delete:
+      tags:
+        - clients
+      summary: Deletes a client by id
+      description: delete a client
+      
+      parameters:
+        - name: clientId
+          in: path
+          description: client id to delete
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: Invalid client value
+      security:
+        - api_key : []  
+
+  /application:
+    put:
+      tags:
+        - application
+      summary: Update an existing application
+      requestBody:
+        description: Update an existent application 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/applications'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/applications'          
+            
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: application not found
+        '405':
+          description: Validation exception
+      security:
+        - api_key: []
+
+    post:
+      tags:
+        - application
+      summary: Add a new application 
+      description: Add a new application
+      requestBody:
+        description: Create a new application
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/applications'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/applications'          
+        '405':
+          description: Invalid input
+      security:
+        - api_key: [] 
+  
+  /application/{applicationId}:
+    get: 
+      tags:
+        - application
+      summary: Find application by id
+      description: Returns a application
+      parameters:
+        - name: applicationId
+          in: path
+          description: ID of application
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/applications'          
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: application not found
+      security:
+        - api_key: []
+
+    delete:
+      tags:
+        - application
+      summary: Deletes a application by id
+      description: delete a application
+      
+      parameters:
+        - name: applicationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: Invalid application value
+      security:
+        - api_key : [] 
+
+  /installedApplication:
+    put:
+      tags:
+        - installed_application
+      summary: Update an existing application
+      requestBody:
+        description: Update an existent application 
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/installed_applications'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/installed_applications'          
+            
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: application not found
+        '405':
+          description: Validation exception
+      security:
+        - api_key: []
+
+    post:
+      tags:
+        - installed_application
+      summary: Add a new application 
+      description: Add a new application
+      requestBody:
+        description: Create a new application
+        content:
+          application/json:
+            schema:
+              $ref: '#/components/schemas/installed_applications'
+        required: true
+      responses:
+        '200':
+          description: Successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/installed_applications'          
+        '405':
+          description: Invalid input
+      security:
+        - api_key: [] 
+  
+  /installedApplication/{applicationId}:
+    get: 
+      tags:
+        - installed_application
+      summary: Find application by id
+      description: Returns a application
+      parameters:
+        - name: applicationId
+          in: path
+          description: ID of application
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '200':
+          description: successful operation
+          content:
+            application/json:
+              schema:
+                $ref: '#/components/schemas/installed_applications'          
+        '400':
+          description: Invalid ID supplied
+        '404':
+          description: application not found
+      security:
+        - api_key: []
+
+    delete:
+      tags:
+        - installed_application
+      summary: Deletes a application by id
+      description: delete a application
+      
+      parameters:
+        - name: applicationId
+          in: path
+          required: true
+          schema:
+            type: integer
+            format: int64
+      responses:
+        '400':
+          description: Invalid application value
+      security:
+        - api_key : []
+
+    
+        
+          
+
+                   
+           
+      
+
+components:
+  schemas:
+    applications: 
+      type: object
+      properties:
+        uid:
+          type: integer
+          format: int64
+          example: 10
+        name:
+          type: string
+          example: application
+        description:
+          type: string
+          example: description about applications
+        available_on:
+          type: string
+          format: date-time
+
+    installed_applications: 
+      type: object
+      properties:
+        uid:
+          type: integer
+          format: int64
+          example: 10
+        client_uid:
+          type: array
+          items:
+            $ref: "#/components/schemas/clients"
+        application_uid:
+          type: array
+          items:
+            $ref: '#/components/schemas/applications'
+        is_enabled:
+          type: boolean
+          example: true    
+
+    clients: 
+      type: object
+      properties:
+        uid:
+          type: integer
+          format: int64
+          example: 10
+        site_name:
+          type: string
+          example: "www.google.com"
+
+    application_variables: 
+      type: object
+      properties:
+        uid:
+          type: integer
+          format: int64
+          example: 10
+        name:
+          type: string
+          example: "Lorem"
+        is_required:
+          type: boolean
+          example: true
+        application_uid:
+          type: array
+          items:
+            $ref: '#/components/schemas/applications'
+        data_type:
+           type: string
+           example: "required_data_type"
+
+    client_specific_variables: 
+      type: object
+      properties:
+        uid:
+          type: integer
+          format: int64
+          example: 10
+        name:
+          type: string
+          example: "Lorem"
+        value:
+          type: integer
+          format: int64
+          example: 23    
+        application_uid:
+          type: array
+          items:
+            $ref: '#/components/schemas/applications'
+        data_type:
+           type: string
+           example: "required_data_type"  
+        application_variable_uid:
+           type: array
+           items: 
+             $ref : '#/components/schemas/installed_applications'    
+
+    application_deployments: 
+      type: object
+      properties:
+        uid:
+          type: integer
+          format: int64
+          example: 10
+        name:
+          type: string
+          example: "Lorem"
+        client_uid:
+          type: array
+          items:
+            $ref: '#/components/schemas/clients'
+        application_uid:
+          type: array
+          items:
+            $ref: '#/components/schemas/applications'
+
+    client_application_variables:
+      type: object
+      properties: 
+        uid:
+          type: integer
+          format: int64
+          example: 10
+        value:
+          type: integer
+          format: int64
+          example: 10
+        application_variable_uid:
+          type: array
+          items:
+            $ref: '#/components/schemas/application_variables'
+        installed_application_uid:
+          type: array
+          items: 
+            $ref : '#/components/schemas/installed_applications'
+
+    application_deployment_logs:
+      type: object
+      properties: 
+        uid:
+          type: integer
+          format: int64
+          example: 10
+        application_deployment_uid:
+          type: array
+          items:
+            $ref: '#/components/schemas/application_deployments'
+        log:
+          type: string
+          example: "logs will be inserted here"
+                 
+        
+  securitySchemes:
+    api_key:
+      type: apiKey
+      name: api_key
+      in: header
