@@ -32,7 +32,7 @@ class CommentsService {
                     blogId: +blogId,
                     comment: comment,
                 });
-                return createdComment;
+                return createdComment.dataValues;
             }
             catch (error) {
                 throw new Error("Not able to post Comment");
@@ -44,11 +44,11 @@ class CommentsService {
                 const comment = yield comments_1.default.findByPk(commentId);
                 if (comment && loggedUserId === comment.userId) {
                     comment.update({ comment: newComment });
-                    return "Comment Edited Succesfully";
+                    return { resp: "Comment Edited Succesfully" };
                     return;
                 }
                 else {
-                    return "You are Not allowed to upadte Comment";
+                    return { resp: "You are Not allowed to upadte Comment" };
                 }
             }
             catch (error) {
@@ -62,14 +62,14 @@ class CommentsService {
                 if (comment && comment.userId === loggedUserId) {
                     const row = yield comment.destroy();
                     if (+row >= 0) {
-                        return "Comment deleted Sucessfully";
+                        return { resp: "Comment deleted Sucessfully" };
                     }
                     else {
-                        return "Not able to delete Comment";
+                        return { resp: "Not able to delete Comment" };
                     }
                 }
                 else {
-                    return "You are not allowed to delete Comment";
+                    return { resp: "You are not allowed to delete Comment" };
                 }
             }
             catch (error) {
@@ -89,10 +89,10 @@ class CommentsService {
                         comment: reply,
                         parentId: +commentId,
                     });
-                    return createdReply;
+                    return createdReply.dataValues;
                 }
                 else {
-                    return "Not allowed to reply";
+                    return { resp: "Not allowed to reply" };
                 }
             }
             catch (error) {

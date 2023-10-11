@@ -20,7 +20,7 @@ class LikesService {
             const { userId, blogId } = inputs;
             try {
                 yield likes_1.default.create({ userId, blogId });
-                return;
+                return true;
             }
             catch (error) {
                 console.log(error);

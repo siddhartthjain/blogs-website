@@ -11,13 +11,14 @@ let dbDriver = process.env.DB_DRIVER;
 let dbUsername = process.env.DB_USERNAME;
 let dbName = process.env.DB_DATABASE;
 let dbPassword = process.env.DB_PASSWORD;
-if (process.env.NODE_ENV == 'test') {
-    dbHost = process.env.DB_HOST;
-    dbDriver = process.env.DB_DRIVER;
-    dbUsername = process.env.DB_USERNAME;
-    dbName = process.env.DB_DATABASE_TEST;
-    dbPassword = process.env.DB_PASSWORD;
-}
+// if(process.env.NODE_ENV == 'test')
+// {
+//  dbHost = process.env.DB_HOST;
+//  dbDriver = process.env.DB_DRIVER as Dialect;
+//  dbUsername= process.env.DB_USERNAME as string;
+//  dbName = process.env.DB_DATABASE_TEST as string;
+//  dbPassword= process.env.DB_PASSWORD
+// }
 const sequelizeConnection = new sequelize_1.Sequelize(dbName, dbUsername, dbPassword, {
     host: dbHost,
     dialect: dbDriver,

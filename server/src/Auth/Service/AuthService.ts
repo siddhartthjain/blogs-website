@@ -7,10 +7,11 @@ export default class AuthService implements AuthContract
       return User.findOne({where :{email: email}})
    }
 
-   createUser=async (inputs:User) => {
+   createUser=async (inputs:Record<string,any>) => {
     try {
-       const user =  await User.create(inputs);
-        return (`user has been created with ${user.id}` );
+       const {name, email, password}= inputs
+       const user =  await User.create({name,email,password});
+        return ({resp:`user has been created with ${user.id}`} );
     } catch (error) {
       console.log(error);
         throw new Error ("Not able to Create New User");

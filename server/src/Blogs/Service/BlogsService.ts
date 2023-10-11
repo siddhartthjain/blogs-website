@@ -113,7 +113,7 @@ export default class BlogsService implements BlogContract
             if (createdBlog && tags) {
               try {
                 if (await postTagsService(blogdata.userId, createdBlog.id, tags)) {
-                  return createdBlog;
+                  return createdBlog.dataValues;
                 } else {
                   throw new Error("Blog not posted");
                 }
@@ -139,7 +139,7 @@ export default class BlogsService implements BlogContract
                 throw new Error("You are not allowed not update this blog");
               } else {
                 await blogExists.update({ title, description });
-                return "Blog updated Succesfully"
+                return {resp: "Blog Updated Succesfully"}
               }
             }
           } catch (error) {
@@ -152,15 +152,19 @@ export default class BlogsService implements BlogContract
         const {BlogId,loggedUserId}= inputs;
         try {
             const blogExists = await Blogs.findByPk(BlogId);
+            console.log("hello");
             if (blogExists && blogExists.userId === loggedUserId) {
               await blogExists.destroy();
-              return "Blog deleted Succesfully"
+              return  { resp:"Blog deleted Succesfully"}
             } else {
+            
               throw new Error("You are not allowed to delete this blog");
             }
           } catch (error) {
             console.log("error in deleting ", error);
-            throw new Error ("Not able to delete Blog")
+            return  new Error ("Not able to delete Blog")
+           
+            
           }
         
     }

@@ -64,7 +64,9 @@ class BlogController {
             blogdata.userId = (_b = req.user) === null || _b === void 0 ? void 0 : _b.id;
             const inputs = { tags, blogdata };
             try {
-                res.json(yield this.blogService.createBlog(inputs));
+                const blog = yield this.blogService.createBlog(inputs);
+                console.log(blog);
+                res.json(blog);
             }
             catch (error) {
                 res.status(500).send("Not able to create Blog");

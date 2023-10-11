@@ -20,8 +20,9 @@ class AuthService {
         });
         this.createUser = (inputs) => __awaiter(this, void 0, void 0, function* () {
             try {
-                const user = yield user_1.default.create(inputs);
-                return (`user has been created with ${user.id}`);
+                const { name, email, password } = inputs;
+                const user = yield user_1.default.create({ name, email, password });
+                return ({ resp: `user has been created with ${user.id}` });
             }
             catch (error) {
                 console.log(error);

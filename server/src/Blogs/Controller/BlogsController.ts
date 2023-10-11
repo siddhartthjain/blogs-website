@@ -61,7 +61,9 @@ import LikeContract from "../Repositories/LikeRepositories";
         const inputs = {tags,blogdata};
 
         try {
-          res.json(await this.blogService.createBlog(inputs))
+          const blog = await this.blogService.createBlog(inputs);
+          console.log(blog);
+          res.json(blog);
         } catch (error) {
           res.status(500).send("Not able to create Blog");
         }

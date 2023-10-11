@@ -8,7 +8,7 @@ export default class LikesService implements LikeContract
         const {userId, blogId}= inputs
         try {
             await Likes.create({userId, blogId});
-             return;
+             return true; 
         } catch (error) {
             console.log(error);
             throw new Error ("not abel to Like blog");
