@@ -5,6 +5,9 @@ import jwt from "jsonwebtoken";
 import dotenv from "dotenv";
 import AuthService from "../Service/AuthService";
 import AuthContract from "../Repositories/AuthRepo";
+import generateOtp   from "../utility/generateOtp"
+import { hdel, hget, hset } from "../../db/Redis/RedisService";
+import {sendOTPMail} from "../../config/nodeMailer";
 dotenv.config();
 
 export default class AuthController {
@@ -25,13 +28,57 @@ export default class AuthController {
       if (userExists) {
         res.status(400).json({ message: "User already exists" });
       } else {
-        res.json({message :await this.authService.createUser(userBody)});
+          const genOtp= generateOtp(4);
+          try {
+            await hset(`user:${userBody.email}`,{...userBody , otp: genOtp});
+            console.log("setting otp:", genOtp);
+          await sendOTPMail(genOtp,userBody.email);
+          res.json({message: "Otp sent succesfully to your email"});
+          } catch (error) {
+            console.log(error);
+            return res.status(500).json({message:"Something went wrong "});
+          }
+          
+        // res.json({message :await this.authService.createUser(userBody)});
       }
     } catch (error) {
       console.log(error);
        res.json({ error: "error in creating user" });
     }
   };
+  // create function storeuserdatainDb function in whcih you will get the data from redis and check with otp filled from frontend and if valid then create user 
+
+  verifyOtpAndCreateUser=async (req:Request , res: Response) => {
+    try {
+      const {email,otp}= req.body;
+      const key = `user:${email}`
+      const userData = await hget(key);
+      const userBody = {...userData};
+
+      if(userData)
+      {
+            console.log(userData.otp)
+            if(otp==userData.otp)
+            {
+              console.log("Otp matched")
+              await hdel(key);
+              return res.json(await this.authService.createUser(userBody));
+            }
+            else{
+               throw Error("Otp Not matched")
+            }
+
+      }
+      else{
+         throw Error("Not able to find the Otp")
+      }
+     
+    } catch (error) {
+      console.log(error);
+      return  res.json({ error: "error in creating user" });
+    }
+    
+  }
 
   login = async (req: Request, res: Response) => {
     try {

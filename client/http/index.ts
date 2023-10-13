@@ -78,6 +78,7 @@ export const sigin = async (data: Record<string, any>) => {
   try {
     const resp = await api.post("Auth/SignUp", data);
     if (approvedStatus.includes(resp.status)) {
+      Cookies.set('userEmail', data.email);
       return true;
     } else {
       return false;
@@ -108,6 +109,10 @@ export const getBlog =async (id:number) =>
   return resp;
 }
 
+export const getEmail = ()=>
+{
+  return Cookies.get('userEmail');
+}
 export const clearCookie= (name:string)=>
 {
   Cookies.remove('authorizationToken');
@@ -134,4 +139,10 @@ export const deleteBlog = async(id:number)=>
 {
    const resp =await api.delete(`Blogs/${id}`);
    return resp;
+}
+
+export const verifyAndSubmitOtp =async (otp:number, email:string) => {
+  const resp = api.post('Auth/verifyEmail', {otp,email});
+  return resp;
+  
 }

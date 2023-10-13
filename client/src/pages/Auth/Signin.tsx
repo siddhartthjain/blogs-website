@@ -38,7 +38,9 @@ const handleSubmit = async (e:any)=>
     {
        if(await sigin({...formData}))
        {
-         router.push("/Auth/Login")
+        
+        router.push("/Auth/Verify")
+        //  router.push("/Auth/Login")
        }
        else{
      

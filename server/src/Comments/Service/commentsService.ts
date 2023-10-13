@@ -3,7 +3,9 @@ import BlogsService from "../../Blogs/Service/BlogsService";
 import Comments from "../../db/models/comments";
 import {CommentsContract} from "../Repositories/CommentsRepositories"
 
+
 export default class CommentsService implements CommentsContract{
+  
   ifCommentExists = async (id: number) => {
     const CommentExists = await Comments.findByPk(id);
     if (CommentExists?.parentId != null) {

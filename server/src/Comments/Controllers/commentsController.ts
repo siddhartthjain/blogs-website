@@ -10,6 +10,7 @@ export default class CommentController
   private blogService : BlogContract
   constructor()
   {
+
     this.commentService= new CommentsService();
     this.blogService= new BlogsService();
   }

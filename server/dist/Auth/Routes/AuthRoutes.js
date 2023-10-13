@@ -12,6 +12,7 @@ const authController = new AuthController_1.default();
 router.get('/LoginPage', authController.loginPage);
 router.post('/Login', (0, validate_1.validationMiddleware)(Dto_1.LoginDto), authController.login);
 router.post('/SignUp', (0, validate_1.validationMiddleware)(Dto_1.SignupDto), authController.signUp);
+router.post('/verifyEmail', (0, validate_1.validationMiddleware)(Dto_1.VerifyDto), authController.verifyOtpAndCreateUser);
 router.get('/google', passport_1.default.authenticate('google', { scope: ["email", "profile"], }));
 router.get("/google/redirect", passport_1.default.authenticate("google"), (req, res) => {
     if (req.user) {

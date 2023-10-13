@@ -27,4 +27,5 @@ const dbInit = () => {
     foreignKey:'blogId'
   })
 };
+
 export default dbInit;

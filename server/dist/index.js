@@ -41,6 +41,7 @@ const swaggerDocument = __importStar(require("./swagger.json"));
 const swagger_ui_express_1 = __importDefault(require("swagger-ui-express"));
 const cors = require('cors');
 const cookie_parser_1 = __importDefault(require("cookie-parser"));
+const RedisService_1 = require("./db/Redis/RedisService");
 dotenv_1.default.config(); // read env file
 const app = (0, express_1.default)(); // make a app from express
 const PORT = process.env.PORT;
@@ -53,6 +54,7 @@ app.use(express_1.default.json());
 app.use(express_1.default.urlencoded({ extended: true }));
 app.use((0, cookie_parser_1.default)());
 (0, init_1.default)();
+(0, RedisService_1.getByKey)("name").then((res) => { console.log(res); });
 app.set('view engine', "ejs");
 app.get("/", (req, res) => {
     res.send("Express and typescript server");

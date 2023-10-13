@@ -6,6 +6,7 @@ import commentController from './Comments/Routes/commentsRoutes'
 import TagsController from "./Tags/Controller/tagsController"
 import bodyParser from 'body-parser';
 import dbInit from './db/init';
+import * as redis from "redis"; 
 import "./config/passport";
 import session from 'express-session';
 import passport from 'passport';
@@ -13,12 +14,11 @@ import YAML from 'yamljs'
 import fs from 'fs'
 const path = require('path')
 import * as swaggerDocument from './swagger.json'
-
 import swaggerUi from 'swagger-ui-express'
 import swaggerJSDoc from 'swagger-jsdoc';
 const cors = require('cors')
 import cookieParser  from 'cookie-parser'
-
+import {getByKey} from "./db/Redis/RedisService"
 dotenv.config();// read env file
 const app = express(); // make a app from express
 const PORT = process.env.PORT
@@ -32,6 +32,7 @@ app.use(express.urlencoded({ extended: true }));
 app.use(cookieParser())
 dbInit();
 
+ getByKey("name").then((res)=>{ console.log(res)});
 
 app.set('view engine', "ejs")
 

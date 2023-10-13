@@ -16,7 +16,8 @@ export default class BlogsService implements BlogContract
     getAllBlog =async (inputs:Record<string,any>) => {
         try {
             const { userId, blogId, items,  sort, tags } = inputs;
-            let {page} = inputs
+            let {page=1} = inputs
+
             page = Math.max(page,1);
             let filter: any = {};
             if (userId) {

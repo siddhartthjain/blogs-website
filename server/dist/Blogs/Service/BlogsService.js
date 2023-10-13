@@ -27,7 +27,7 @@ class BlogsService {
         this.getAllBlog = (inputs) => __awaiter(this, void 0, void 0, function* () {
             try {
                 const { userId, blogId, items, sort, tags } = inputs;
-                let { page } = inputs;
+                let { page = 1 } = inputs;
                 page = Math.max(page, 1);
                 let filter = {};
                 if (userId) {

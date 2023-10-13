@@ -12,4 +12,4 @@ router.delete("/:commentId", commentsController.deleteComment);
 router.post("/:commentId/reply", commentsController.postReply);
 router.delete("/:commentId/reply/:replyId", commentsController.deleteReply);
 
-export default router;
+export default router; 
